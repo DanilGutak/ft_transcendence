@@ -25,12 +25,14 @@ SECRET_KEY = 'django-insecure-vavkdvm*9cjg(dq+l=veb)nluf*j@oy@7+#&upu=@bi-o)mhb_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'rest_framework', # Add this line
+    'login_app',
     'corsheaders', 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -87,7 +89,7 @@ DATABASES = {
         'NAME': 'login', 
         'USER': 'postgres',
         'PASSWORD': 'postgres',
-        'HOST': '127.0.0.1', 
+        'HOST': 'login_db', 
         'PORT': '5432',
     }
 }
@@ -117,7 +119,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Vienna'
 
 USE_I18N = True
 

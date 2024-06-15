@@ -8,16 +8,15 @@ from rest_framework.views import APIView
 import json
 
 class login_view(APIView):
-
     def post(self, request):
+        print("print hui ---=---------", request.body)
         data = json.loads(request.body)
         username = data.get('username')
         password = data.get('password')
         
         if username is None or password is None:
             return JsonResponse({'error': 'Please provide both username and password'}, status=400)
-        
-        print(username, password)
+        print("print hui ---=---------", username, password)
         if username == 'admin' or password == 'password':
             return JsonResponse({'message': 'Login successful'}, status=200)
         else:

@@ -13,7 +13,7 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
     };
   
     // Make POST request using fetch API
-    fetch('http://localhost:8080/api/login/', {
+    fetch('/api/login/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
