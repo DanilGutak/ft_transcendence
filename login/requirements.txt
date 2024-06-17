@@ -4,5 +4,6 @@ django-bootstrap-v5
 djangorestframework
 markdown
 django-filter
-djangorestframework_simplejwt
 django-cors-headers
+djangorestframework-simplejwt
+django-two-factor-auth

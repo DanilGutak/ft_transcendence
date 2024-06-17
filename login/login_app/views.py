@@ -5,23 +5,36 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.middleware.csrf import get_token
 from rest_framework.views import APIView
+from .serializers import RegisterSerializer , LoginSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
+from .models import TwoFactorAuth
 import json
 
-class login_view(APIView):
+class RegisterView(APIView):
     def post(self, request):
-        print("print hui ---=---------", request.body)
-        data = json.loads(request.body)
-        username = data.get('username')
-        password = data.get('password')
+        serializer = RegisterSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse({'message': 'User created successfully'}, status=201)
+        return JsonResponse(serializer.errors, status=400)
+
+class LoginView(APIView):
+    def post(self, request):
+        serializer = LoginSerializer(data=request.data)
+        if serializer.is_valid():
+            username = serializer.data['username']
+            password = serializer.data['password']
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                refresh = RefreshToken.for_user(user)
+                return JsonResponse({'refresh': str(refresh), 'access': str(refresh.access_token)}, status=200)
+            else:
+                return JsonResponse({'error': 'Invalid credentials'}, status=400)
+        return JsonResponse(serializer.errors, status=400)
+            
         
-        if username is None or password is None:
-            return JsonResponse({'error': 'Please provide both username and password'}, status=400)
-        print("print hui ---=---------", username, password)
-        if username == 'admin' or password == 'password':
-            return JsonResponse({'message': 'Login successful'}, status=200)
-        else:
-            return JsonResponse({'error': 'Invalid credentials'}, status=400)
-    
+        
+        
 
 
 

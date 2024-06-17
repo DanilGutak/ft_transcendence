@@ -11,8 +11,11 @@ RUN apt-get update \
         postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 COPY requirements.txt /requirements.txt
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod 777 entrypoint.sh
 RUN pip install --upgrade pip \
     && pip install -r requirements.txt
 
+
 EXPOSE 8000
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["bash", "entrypoint.sh"]
