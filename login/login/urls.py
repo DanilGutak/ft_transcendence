@@ -16,11 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from login_app.views import LoginView, RegisterView
-from rest_framework_simplejwt import views as jwt_views
+from login_app.views import *
+from rest_framework_simplejwt import views as jwt_views # type: ignore
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/login/',LoginView.as_view() , name='Login'),
     path('api/register/',RegisterView.as_view() , name='Register'),
+    path('api/2fa/send', SendTwoFactorAuthView.as_view(), name='SendTwoFactorAuth'),
+    path('api/2fa/verify', VerifyTwoFactorAuthView.as_view(), name='VerifyTwoFactorAuth'),
 ]

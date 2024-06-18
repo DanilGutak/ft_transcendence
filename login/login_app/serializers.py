@@ -6,6 +6,7 @@ from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.core.validators import EmailValidator
 from django.contrib.auth import authenticate
 
+# validatation for registration attempt
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, max_length=150,required=True, validators=[validate_password])
     password2 = serializers.CharField(write_only=True, max_length=150,required=True)

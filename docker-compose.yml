@@ -33,10 +33,13 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8000:8000"
+      - "587:587"
     working_dir: /code
     restart: always
     volumes:
       - ./login:/code
+    env_file:
+      - .env
     depends_on:
       login_db:
         condition: service_healthy
