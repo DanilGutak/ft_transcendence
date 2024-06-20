@@ -7,6 +7,9 @@ from django.middleware.csrf import get_token
 from rest_framework.views import APIView
 from .serializers import RegisterSerializer , LoginSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.permissions import IsAuthenticated
+
 from django.utils.crypto import get_random_string
 from django.utils import timezone
 from django.core.mail import send_mail
@@ -68,3 +71,24 @@ class SendTwoFactorAuthView(APIView):
 class VerifyTwoFactorAuthView(APIView):
     def post(self, request):
         pass
+
+
+class LogoutView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    def post(self, request):
+
+        refresh_token = request.data['refresh']
+        if not refresh_token:
+            return JsonResponse({'error': 'Token is required'}, status=400)
+        token = RefreshToken(refresh_token)
+        token.blacklist()
+        logout(request)
+        return JsonResponse({'message': 'User logged out successfully'}, status=200)
+    
+class TestView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        return JsonResponse({'message': 'Hello, World!'}, status=200)
+    

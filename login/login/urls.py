@@ -25,4 +25,13 @@ urlpatterns = [
     path('api/register/',RegisterView.as_view() , name='Register'),
     path('api/2fa/send', SendTwoFactorAuthView.as_view(), name='SendTwoFactorAuth'),
     path('api/2fa/verify', VerifyTwoFactorAuthView.as_view(), name='VerifyTwoFactorAuth'),
+    path('api/token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/logout/', LogoutView.as_view(), name='Logout'),
+    path('api/test/', TestView.as_view(), name='User'),
+    # path('api/change-password/', ChangePasswordView.as_view(), name='ChangePassword'),
+    # path('api/2fa/enable', EnableTwoFactorAuthView.as_view(), name='EnableTwoFactorAuth'),
+    # path('api/2fa/disable', DisableTwoFactorAuthView.as_view(), name='DisableTwoFactorAuth'),
+
+
+
 ]
