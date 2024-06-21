@@ -2,5 +2,15 @@
 **__pycache__/
 db.sqlite3
 postgres/
-*/*/migrations/
+
 .env
+
+# for some reason, some lines below don't work (or I don't understand the syntax lol),
+# let's test all of them together and remove later the unnecessary ones
+*/*/migrations/
+migrations/
+**/migrations/
+
+# ignoring the folder configuration file on Mac
+.DS_Store
+**/.DS_Store
