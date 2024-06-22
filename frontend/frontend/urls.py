@@ -18,9 +18,6 @@ from django.urls import path
 from frontend_app.views import *
 
 urlpatterns = [
-    path('', IndexView, name='Index'),
-    path('login/', LoginView, name='Login'),
-    path('register/', RegisterView, name='Register'),
-    path('profile/', ProfileView, name='Profile'),
-    path('game/', GameView, name='Game'),
+    path('', render_page, {'page_name': 'home'}, name='Index'),
+    path('<str:page_name>/', render_page, name='render_page')
 ]

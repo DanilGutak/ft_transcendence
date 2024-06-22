@@ -68,6 +68,17 @@ TEMPLATES = [
     },
 ]
 
+# Static files (CSS, JavaScript, Images)
+STATIC_URL = '/static/'
+
+# The directory where collectstatic will gather static files
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Additional locations of static files
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
+
 WSGI_APPLICATION = 'frontend.wsgi.application'
 
 

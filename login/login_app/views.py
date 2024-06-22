@@ -70,7 +70,17 @@ class SendTwoFactorAuthView(APIView):
 
 class VerifyTwoFactorAuthView(APIView):
     def post(self, request):
-        pass
+        data = json.loads(request.body)
+        user = authenticate(username=data['username'], password=data['password'])
+        if user is not None:
+            two_factor_auth = TwoFactorAuth.objects.get(user=user)
+            if two_factor_auth.otp_valid_until > timezone.now():
+                if check_password(data['otp'], two_factor_auth.otp):
+                    refresh = RefreshToken.for_user(user)
+                    return JsonResponse({'refresh': str(refresh), 'access': str(refresh.access_token)}, status=200)
+                return JsonResponse({'error': 'Invalid OTP'}, status=400)
+            return JsonResponse({'error': 'OTP expired'}, status=400)
+        return JsonResponse({'error': 'Invalid credentials'}, status=400)
 
 
 class LogoutView(APIView):
@@ -85,10 +95,20 @@ class LogoutView(APIView):
         token.blacklist()
         logout(request)
         return JsonResponse({'message': 'User logged out successfully'}, status=200)
-    
 class TestView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     def get(self, request):
         return JsonResponse({'message': 'Hello, World!'}, status=200)
     
+# class PasswordResetView(APIView):
+
+# class PasswordResetConfirmView(APIView):
+
+# class PasswordChangeView(APIView):
+
+# class PasswordChangeConfirmView(APIView):
+
+# class TwoFactorAuthViewEnable(APIView):
+
+# class TwoFactorAuthViewDisable(APIView):

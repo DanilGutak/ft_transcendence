@@ -1,0 +1,43 @@
+<div id="register" class="{% if not register %}hidden{% endif %}">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 mx-auto">
+  
+                <h1>Register</h1>
+                <div id="error-message" class="hidden">
+                <div id="error-message" class="alert alert-danger"><strong>Login failed! Please try again</strong></div>
+                </div>
+                <form id="register-form">
+                    <div class="form-group">
+                        <label for="register-username">Username</label>
+                        <input type="text" class="form-control"
+                            id="register-username"
+                            placeholder="Enter username">
+                    </div>
+                    
+                    <div class = "form-group">
+                        <label for="register-email">Email</label>
+                        <input type="email" class="form-control"
+                            id="register-email"
+                            placeholder="Enter email">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="register-password">Password</label>
+                        <input type="password" class="form-control"
+                            id="register-password"
+                            placeholder="Enter password">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password2">Password</label>
+                        <input type="password" class="form-control"
+                            id="register-password2"
+                            placeholder="Enter password">
+                    </div>
+                    </form>
+                    <button id="submitrButton" type="button"
+                        class="btn btn-primary">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
