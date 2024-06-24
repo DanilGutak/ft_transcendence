@@ -1,13 +1,18 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const loginForm = document.getElementById('loginButton');
+  const loginForm = document.getElementById('login-button');
   loginForm.addEventListener('click', function(event) {
-    Login();
+    login();
+  });
+  const registerForm = document.getElementById('register-button');
+  registerForm.addEventListener('click', function(event) {
+    document.getElementById('register').classList.remove('hidden');
+    document.getElementById('login').classList.add('hidden');
   });
 
 });
 
 
-function Login() {
+function login() {
   const username = document.getElementById('login-username').value;
   const password = document.getElementById('login-password').value;
   const errorMessage = document.getElementById('error-message');

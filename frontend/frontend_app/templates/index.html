@@ -21,10 +21,10 @@
                 <a class="navbar-brand" href="#">Navbar</a>     
                 <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                   <div class="navbar-nav">
-                    <a class="nav-item nav-link active" href="/Home" data-path="/">Home</a>
-                    <a class="nav-item nav-link" href="/profile" data-path="/profile">Profile</a>
-                    <a class="nav-item nav-link" href="/game"  data-path="/game">Game</a>
-                    <a class="nav-item nav-link" href="/logout"  data-path="/logout">Logout</a>
+                    <a class="nav-item nav-link active" href="/home" data-path="home">Home</a>
+                    <a class="nav-item nav-link" href="/login" data-path="login">Login</a>
+                    <a class="nav-item nav-link" href="/game"  data-path="game">Game</a>
+                    <a class="nav-item nav-link" href="/logout"  data-path="logout">Logout</a>
                   </div>
                 </div>
               </nav>
@@ -34,11 +34,11 @@
         </div>
 
         <div id="view">
+            {% include 'home.html' %}
             {% include 'login.html' %}
             {% include 'register.html' %}
-            
+            {% include 'game.html' %}
             </div>
-            <script src="{% static 'script.js' %}"></script>
             <script src="{% static 'navigation.js' %}" defer></script>
             <script
                 src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

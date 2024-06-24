@@ -4,5 +4,5 @@ from django.shortcuts import render , redirect
 
 
 def render_page(request, page_name):
-    context = {"login": False, "register": True}
+    context = {"login": False, "register": False}
     return render(request, 'index.html', context)
