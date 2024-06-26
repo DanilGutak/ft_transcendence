@@ -1,6 +1,27 @@
 {% load static %}
-<script src="{% static 'game.js' %}"></script>
 <div id="game" class="page {% if not game %}hidden{% endif %}">
     <!-- create simple game -->
-<div> this is game</div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 mx-auto">
+                <form id="game-form" class="mb-3">
+                    <div class="form-group  mb-3">
+                        <label for="aliases">Enter <strong>aliases</strong> separated by comma</label>
+                        <input type="text" class="form-control"
+                            id="aliases">
+                    
+                    </div>
+                </form>
+                <button id="game-button" type="button"
+                    class="btn btn-primary ">Start Game</button>
+                </div>
+        </div>
+        </div>
+    
+    <canvas id="game-canvas" width="600" height="600" > 
+    </canvas>
+<div>
+<script src="{% static 'game.js' %}"></script>
+
+</div>
 </div>
