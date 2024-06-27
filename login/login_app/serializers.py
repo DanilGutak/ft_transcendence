@@ -32,4 +32,3 @@ class LoginSerializer(serializers.ModelSerializer):
         model = User
         fields = ['username','password']
     #idk what to add here yet
-    
