@@ -1,0 +1,30 @@
+{% load static %}
+<script src="{% static 'login.js' %}"></script>
+<div id="login" class="page {% if not login %}hidden{% endif %}">
+  <div class="container">
+      <div class="row">
+          <div class="col-md-6 mx-auto">
+              <h1>Login</h1>
+              <div id="error-message" class="hidden">
+              <div id="error-message" class="alert alert-danger"><strong>Login failed! Please try again</strong></div>
+              </div>
+              <form id="login-form" class="mb-3">
+                  <div class="form-group  mb-3">
+                      <label for="login-username">Username</label>
+                      <input type="text" class="form-control"
+                          id="login-username">
+                  </div>
+                  <div  class="form-group mb-3">
+                      <label for="login-password">Password</label>
+                      <input type="password" class="form-control"
+                          id="login-password">
+                  </form>
+                  <button id="login-button" type="button"
+                      class="btn btn-primary ">Login</button>
+                  <button id="register-button" type="button"
+                      class="btn btn-secondary ">Register</button>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>

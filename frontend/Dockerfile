@@ -16,4 +16,5 @@ RUN pip install --upgrade pip \
 
 
 EXPOSE 8001
-CMD ["python" ,"manage.py" ,"runserver" ,"0.0.0.0:8001"]
+
+CMD ["bash", "entrypoint.sh"]

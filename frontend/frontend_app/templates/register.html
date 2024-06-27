@@ -1,0 +1,47 @@
+{% load static %}
+<script src="{% static 'register.js' %}"></script>
+<div id="register" class="page {% if not register %}hidden{% endif %}">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 mx-auto">
+                <h1>Register</h1>
+                <div id="success-container-register"  class="hidden"  > 
+                    <div id="success-message-register" class="alert alert-success"><strong>Register successful!</strong></div></div>
+                <div id="error-container-register" class="hidden">
+                <div id="error-message-register" class="alert alert-danger"><strong>Register failed:</strong></div>
+                </div>
+                <form id="register-form">
+                    <div class="form-group">
+                        <label for="register-username">Username</label>
+                        <input type="text" class="form-control"
+                            id="register-username"
+                            >
+                    </div>
+                    <div class = "form-group">
+                        <label for="register-email">Email</label>
+                        <input type="email" class="form-control"
+                            id="register-email"
+                            >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="register-password">Password</label>
+                        <input type="password" class="form-control"
+                            id="register-password"
+                            >
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password2">Password again</label>
+                        <input type="password" class="form-control"
+                            id="register-password2"
+                            >
+                    </div>
+                    </form>
+                    <button id="register-submit-button" type="button"
+                        class="btn btn-primary">Submit</button>
+                    <button id="register-login-button" type="button"
+                        class="btn btn-secondary">Back to login</button>
+                </div>
+            </div>
+        </div>
+    </div>
