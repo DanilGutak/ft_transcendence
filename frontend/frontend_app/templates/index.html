@@ -41,10 +41,16 @@
         </div>
 
         <div id="view">
+            <div id="success-container"  class="hidden"  > 
+            <div id="success-message" class="alert alert-success"></div></div>
+            <div id="error-container" class="hidden">
+            <div id="error-message" class="alert alert-danger"></div>
+            </div>
             {% include 'home.html' %}
             {% include 'login.html' %}
             {% include 'register.html' %}
             {% include 'game.html' %}
+            {% include '2fa.html' %}
             </div>
             <script src="{% static 'navigation.js' %}" defer></script>
             <script

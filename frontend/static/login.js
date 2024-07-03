@@ -16,6 +16,7 @@ function login() {
   const username = document.getElementById('login-username').value;
   const password = document.getElementById('login-password').value;
   const errorMessage = document.getElementById('error-message');
+  const errorContainer = document.getElementById('error-container');
   const data = {
     username: username,
     password: password
@@ -36,11 +37,28 @@ function login() {
 })
 .then(data => {
     // Handle successful login here
-    console.log(data);
-    errorMessage.classList.add('hidden'); // Hide error message on successful login
+    errorContainer.classList.add('hidden'); // Hide error message on successful login
+    if (data['message'] === 'Two factor authentication required') {
+        document.getElementById('login').classList.add('hidden');
+        document.getElementById('2fa').classList.remove('hidden');
+        data = {
+            username: username,
+            password: password
+        };
+        fetch('/api/2fa/send', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+    }
 })
 .catch(error => {
-    errorMessage.classList.remove('hidden'); // Show error message on failed login
+    errorContainer.classList.remove('hidden');
+    errorMessage.classList.remove('hidden');
+    errorMessage.innerHTML = '<strong>Login failed! Try again later</strong>';
+    // Show error message on failed login
 });
 }
 // press on the "Login" button in the login form

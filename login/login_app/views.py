@@ -99,13 +99,22 @@ class LogoutView(APIView):
         token.blacklist()
         logout(request)
         return JsonResponse({'message': 'User logged out successfully'}, status=200)
-class TestView(APIView):
+
+class TwoFactorAuthViewEnable(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
-    def get(self, request):
-        return JsonResponse({'message': 'Hello, World!'}, status=200)
+    def post(self, request):
+        two_factor_auth = TwoFactorAuth.objects.get(user=request.user)
+        two_factor_auth.two_factor_enabled = True
+        two_factor_auth.save()
+        return JsonResponse({'message': 'Two factor authentication enabled'}, status=200)
 
 
-# class TwoFactorAuthViewEnable(APIView):
-
-# class TwoFactorAuthViewDisable(APIView):
+class TwoFactorAuthViewDisable(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    def post(self, request):
+        two_factor_auth = TwoFactorAuth.objects.get(user=request.user)
+        two_factor_auth.two_factor_enabled = False
+        two_factor_auth.save()
+        return JsonResponse({'message': 'Two factor authentication disabled'}, status=200)

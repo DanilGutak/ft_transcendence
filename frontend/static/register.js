@@ -20,9 +20,10 @@ function register() {
     const password = document.getElementById('register-password');
     const password2 = document.getElementById('register-password2');
     const email = document.getElementById('register-email');
-    const errorMessage = document.getElementById('error-message-register');
-    const errorContainer = document.getElementById('error-container-register');
-    const successContainer = document.getElementById('success-container-register');
+    const errorMessage = document.getElementById('error-message');
+    const errorContainer = document.getElementById('error-container');
+    const successContainer = document.getElementById('success-container');
+    const successMessage = document.getElementById('success-message');
     const data = {
       username: username.value,
       email: email.value,
@@ -48,6 +49,7 @@ function register() {
     .then(data => {
         // Handle successful registration here
         successContainer.classList.remove('hidden');
+        successMessage.innerHTML = '<strong>Registration successful!</strong>';
         errorContainer.classList.add('hidden');
         username.value = '';
         email.value = '';
