@@ -77,7 +77,11 @@ class VerifyTwoFactorAuthView(APIView):
             if two_factor_auth.otp_valid_until > timezone.now():
                 if check_password(data['otp'], two_factor_auth.otp):
                     refresh = RefreshToken.for_user(user)
+                    two_factor_auth.otp = None
+                    two_factor_auth.otp_valid_until = None
+                    two_factor_auth.save()
                     return JsonResponse({'refresh': str(refresh), 'access': str(refresh.access_token)}, status=200)
+
                 return JsonResponse({'error': 'Invalid OTP'}, status=400)
             return JsonResponse({'error': 'OTP expired'}, status=400)
         return JsonResponse({'error': 'Invalid credentials'}, status=400)
@@ -100,14 +104,7 @@ class TestView(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request):
         return JsonResponse({'message': 'Hello, World!'}, status=200)
-    
-# class PasswordResetView(APIView):
 
-# class PasswordResetConfirmView(APIView):
-
-# class PasswordChangeView(APIView):
-
-# class PasswordChangeConfirmView(APIView):
 
 # class TwoFactorAuthViewEnable(APIView):
 
