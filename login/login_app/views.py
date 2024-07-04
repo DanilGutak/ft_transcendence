@@ -74,7 +74,7 @@ class VerifyTwoFactorAuthView(APIView):
         user = authenticate(username=data['username'], password=data['password'])
         if user is not None:
             two_factor_auth = TwoFactorAuth.objects.get(user=user)
-            if two_factor_auth.otp_valid_until > timezone.now():
+            if two_factor_auth.otp_valid_until and two_factor_auth.otp_valid_until > timezone.now():
                 if check_password(data['otp'], two_factor_auth.otp):
                     refresh = RefreshToken.for_user(user)
                     two_factor_auth.otp = None
@@ -118,3 +118,10 @@ class TwoFactorAuthViewDisable(APIView):
         two_factor_auth.two_factor_enabled = False
         two_factor_auth.save()
         return JsonResponse({'message': 'Two factor authentication disabled'}, status=200)
+
+class TwoFactorAuthViewStatus(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        two_factor_auth = TwoFactorAuth.objects.get(user=request.user)
+        return JsonResponse({'two_factor_enabled': two_factor_auth.two_factor_enabled}, status=200)

@@ -29,6 +29,7 @@ urlpatterns = [
     path('api/2fa/verify', VerifyTwoFactorAuthView.as_view(), name='VerifyTwoFactorAuth'),
     path('api/2fa/enable', TwoFactorAuthViewEnable.as_view(), name='EnableTwoFactorAuth'),
     path('api/2fa/disable', TwoFactorAuthViewDisable.as_view(), name='DisableTwoFactorAuth'),
+    path('api/2fa/status', TwoFactorAuthViewStatus.as_view(), name='TwoFactorAuthStatus'),
 
 
 

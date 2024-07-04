@@ -78,8 +78,5 @@ function register() {
         }
         errorMessage.innerHTML += '</strong>';
         
-        // Assuming error is an object with field-specific messages
-        
-
     });
 }

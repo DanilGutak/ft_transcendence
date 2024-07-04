@@ -25,34 +25,44 @@
     <body>
         <div id="header">
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                <a class="navbar-brand" href="#">Navbar</a>     
+                <a class="navbar-brand">Transcendence</a>     
                 <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                  <div class="navbar-nav">
-                    <a class="nav-item nav-link active" href="/home" data-path="home">Home</a>
-                    <a class="nav-item nav-link" href="/login" data-path="login">Login</a>
-                    <a class="nav-item nav-link" href="/game"  data-path="game">Game</a>
-                    <a class="nav-item nav-link" href="/logout"  data-path="logout">Logout</a>
-                  </div>
+                    <div id="logged-out">
+                    <div class="navbar-nav" id="logged_out">
+                        <a class="nav-item nav-link" href="/home" data-path="home">Home</a>
+                        <a class="nav-item nav-link" href="/login" data-path="login">Login</a>
+                        <a class="nav-item nav-link" href="/register" data-path="register">Register</a>
+                    </div>
                 </div>
-              </nav>
+                    <div id="logged-in" class="hidden">
+                    <div class="navbar-nav hidden" id="logged_in">
+                        <a class="hidden nav-item nav-link" href="/home" data-path="home">Home</a>
+                        <a class="nav-item nav-link" href="/game" data-path="game">Game</a>
+                        <a class="nav-item nav-link" href="/logout" data-path="logout">Logout</a>
+                        <label for="2fa-tickbox">2FA Enabled:</label>
+                        <input type="checkbox" id="2fa-tickbox" name="2fa-tickbox">
+                    </div>
+                    </div>
+                </div>
+            </nav>
         </div>
-        <div id="content">
-
-        </div>
-
         <div id="view">
             <div id="success-container"  class="hidden"  > 
             <div id="success-message" class="alert alert-success"></div></div>
             <div id="error-container" class="hidden">
-            <div id="error-message" class="alert alert-danger"></div>
-            </div>
+            <div id="error-message" class="alert alert-danger"></div></div>
+            {% include '2fa.html' %}
             {% include 'home.html' %}
             {% include 'login.html' %}
             {% include 'register.html' %}
             {% include 'game.html' %}
-            {% include '2fa.html' %}
+            
             </div>
             <script src="{% static 'navigation.js' %}" defer></script>
+            <script src="{% static 'login.js' %}"></script>
+            <script src="{% static 'register.js' %}"></script>
+            <script src="{% static '2fa.js' %}"></script>
+            <script src="{% static 'game.js' %}"></script>
             <script
                 src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
             <script
