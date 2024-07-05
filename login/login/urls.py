@@ -23,7 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/login/',LoginView.as_view() , name='Login'),
     path('api/register/',RegisterView.as_view() , name='Register'),
-    path('api/token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/token/refresh', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
     path('api/logout/', LogoutView.as_view(), name='Logout'),
     path('api/2fa/send', SendTwoFactorAuthView.as_view(), name='SendTwoFactorAuth'),
     path('api/2fa/verify', VerifyTwoFactorAuthView.as_view(), name='VerifyTwoFactorAuth'),

@@ -13,88 +13,108 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     Submit2fa.addEventListener('click', function(event) {
-      verify2fa();
+        verify2fa();
+        Submit2fa.disabled = true;
+        setTimeout(() => {
+            Submit2fa.disabled = false;
+        }, 20000);
     });
     Send2fa.addEventListener('click', function(event) {
       send2fa();
+      Send2fa.disabled = true;
+        setTimeout(() => {
+            Send2fa.disabled = false;
+        }, 20000);
     });
     Tickbox2fa.addEventListener('click', function(event) {
       tickbox2fa();
+      Tickbox2fa.disabled = true;
+      setTimeout(() => {
+        Tickbox2fa.disabled = false;
+    }, 2000);
     });
   });
 
 
-  function tickbox2fa() {
+  async function refreshToken() {
+    const refreshToken = localStorage.getItem('refresh-token');
+    const response = await fetch('/api/token/refresh', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ refresh: refreshToken }),
+    });
+
+    if (!response.ok) {
+        throw new Error('Failed to refresh token');
+    }
+
+    const data = await response.json();
+    localStorage.setItem('access-token', data.access);
+    localStorage.setItem('refresh-token', data.refresh);
+}
+
+async function tickbox2fa() {
     const checkbox = document.getElementById('2fa-tickbox');
-    token = localStorage.getItem('access-token');
-    if (checkbox.checked) {
-        document.getElementById('2fa').classList.add('hidden');
-        fetch('/api/2fa/enable', {
+    let token = localStorage.getItem('access-token');
+
+    try {
+        if (checkbox.checked) {
+            document.getElementById('2fa').classList.add('hidden');
+            await make2faRequest('/api/2fa/enable', token, '2FA enabled!');
+        } else {
+            await make2faRequest('/api/2fa/disable', token, '2FA disabled!');
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function make2faRequest(url, token, successMessageText) {
+    let response = await fetch(url, { 
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token,
+        },
+    });
+
+    if (response.status === 401) {
+        await refreshToken();
+        token = localStorage.getItem('access-token');
+        response = await fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + token,
             },
-        })
-        .then(response => {
-            if (!response.ok) {
-                return response.json().then(err => {
-                    throw err;
-                });
-            }
-            return response.json(); 
-        })
-        .then(data => {
-            // Handle successful verification here
-            errorContainer.classList.add('hidden');
-            errorMessage.classList.add('hiddeh');
-            successContainer.classList.remove('hidden');
-            successMessage.innerHTML = '<strong>2FA enabled!</strong>';
-            // wait for sec
-            setTimeout(() => {
-                successContainer.classList.add('hidden');
-            }, 2000);
-        })
-        .catch(error => {
-            errorContainer.classList.remove('hidden');
-            errorMessage.innerHTML = '<strong>Could not enable 2FA! Try again later</strong>';
-            checkbox.checked = false;
         });
     }
-    else{
-        fetch('/api/2fa/disable', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token,
-            },
-        })
-        .then(response => {
-            if (!response.ok) {
-                return response.json().then(err => {
-                    throw err;
-                });
-            }
-            return response.json(); 
-        })
-        .then(data => {
-            // Handle successful verification here
-            errorContainer.classList.add('hidden');
-            errorMessage.classList.add('hiddeh');
-            successContainer.classList.remove('hidden');
-            successMessage.innerHTML = '<strong>2FA disabled!</strong>';
-            // wait for sec
-            setTimeout(() => {
-                successContainer.classList.add('hidden');
-            }, 2000);
-        })
-        .catch(error => {
-            errorContainer.classList.remove('hidden');
-            errorMessage.innerHTML = '<strong>Could not disable 2FA! Try again later</strong>';
-            checkbox.checked = true;
-        });
+
+    if (!response.ok) {
+        const err = await response.json();
+        throw err;
     }
-    
+
+    const data = await response.json();
+    handleSuccess(successMessageText);
+}
+
+function handleSuccess(message) {
+    const successContainer = document.getElementById('successContainer');
+    const successMessage = document.getElementById('successMessage');
+    const errorContainer = document.getElementById('errorContainer');
+    const errorMessage = document.getElementById('errorMessage');
+
+    errorContainer.classList.add('hidden');
+    errorMessage.classList.add('hidden');
+    successContainer.classList.remove('hidden');
+    successMessage.innerHTML = `<strong>${message}</strong>`;
+
+    setTimeout(() => {
+        successContainer.classList.add('hidden');
+    }, 2000);
 }
 
 function verify2fa() {
@@ -118,6 +138,7 @@ function verify2fa() {
     })
     .then(response => {
         if (!response.ok) {
+            
             return response.json().then(err => {
                 throw err;
             });
