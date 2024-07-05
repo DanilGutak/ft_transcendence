@@ -102,10 +102,10 @@ async function make2faRequest(url, token, successMessageText) {
 }
 
 function handleSuccess(message) {
-    const successContainer = document.getElementById('successContainer');
-    const successMessage = document.getElementById('successMessage');
-    const errorContainer = document.getElementById('errorContainer');
-    const errorMessage = document.getElementById('errorMessage');
+    const successContainer = document.getElementById('success-container');
+    const successMessage = document.getElementById('success-message');
+    const errorContainer = document.getElementById('error-container');
+    const errorMessage = document.getElementById('error-message');
 
     errorContainer.classList.add('hidden');
     errorMessage.classList.add('hidden');
