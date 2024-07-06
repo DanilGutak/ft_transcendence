@@ -116,6 +116,19 @@ function handleSuccess(message) {
         successContainer.classList.add('hidden');
     }, 2000);
 }
+function handleFailure(message) {
+    const successContainer = document.getElementById('success-container');
+    const successMessage = document.getElementById('success-message');
+    const errorContainer = document.getElementById('error-container');
+    const errorMessage = document.getElementById('error-message');
+
+    successContainer.classList.add('hidden');
+    errorContainer.classList.remove('hidden');
+    errorMessage.classList.innerHTML = `<strong>${message}</strong>`;
+    setTimeout(() => {
+        errorContainer.classList.add('hidden');
+    }, 3000);
+}
 
 function verify2fa() {
     const code = document.getElementById('2fa-OTP').value;
@@ -154,6 +167,8 @@ function verify2fa() {
         document.getElementById('2fa-tickbox').checked = true;
         localStorage.setItem('access-token', data['access']);
         localStorage.setItem('refresh-token', data['refresh']);
+        document.getElementById('login-username').value = '';
+        document.getElementById('login-password').value = '';
         // wait for sec
         setTimeout(() => {
             loginSuccess();

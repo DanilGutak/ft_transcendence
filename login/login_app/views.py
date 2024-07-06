@@ -100,6 +100,12 @@ class LogoutView(APIView):
         logout(request)
         return JsonResponse({'message': 'User logged out successfully'}, status=200)
 
+class LoggedInView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        return JsonResponse({'message': 'User is logged in'}, status=200)
+
 class TwoFactorAuthViewEnable(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]

@@ -12,5 +12,6 @@ class TwoFactorAuth(models.Model):
         return self.user.username
 
 
+
     
     
