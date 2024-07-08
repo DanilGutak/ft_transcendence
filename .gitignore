@@ -2,7 +2,10 @@
 **__pycache__/
 db.sqlite3
 postgres/
-
+nginx_logs/
+backend_logs/
+certs/
+elasticsearch/
 .env
 
 # for some reason, some lines below don't work (or I don't understand the syntax lol),
