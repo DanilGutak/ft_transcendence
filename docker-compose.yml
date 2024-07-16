@@ -1,34 +1,34 @@
 services:
-  elasticsearch:
-    image: elasticsearch:7.17.0
-    container_name: elasticsearch
-    environment:
-      - discovery.type=single-node
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    ports:
-      - "9200:9200"
-    volumes:
-      - ./elasticsearch:/usr/share/elasticsearch/data
-  kibana:
-    image: kibana:7.17.0
-    container_name: kibana
-    environment:
-      ELASTICSEARCH_HOSTS: "http://elasticsearch:9200"
-    ports:
-      - "5601:5601"
-    depends_on:
-      - elasticsearch
-  logstash:
-    image: logstash:7.17.0
-    container_name: logstash
-    volumes:
-      - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
-      - ./nginx_logs:/var/log/nginx
-      - ./backend_logs:/var/log/backend
-    ports:
-      - "5000:5000"
-    depends_on:
-      - elasticsearch
+  # elasticsearch:
+  #   image: elasticsearch:7.17.0
+  #   container_name: elasticsearch
+  #   environment:
+  #     - discovery.type=single-node
+  #     - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+  #   ports:
+  #     - "9200:9200"
+  #   volumes:
+  #     - ./elasticsearch:/usr/share/elasticsearch/data
+  # kibana:
+  #   image: kibana:7.17.0
+  #   container_name: kibana
+  #   environment:
+  #     ELASTICSEARCH_HOSTS: "http://elasticsearch:9200"
+  #   ports:
+  #     - "5601:5601"
+  #   depends_on:
+  #     - elasticsearch
+  # logstash:
+  #   image: logstash:7.17.0
+  #   container_name: logstash
+  #   volumes:
+  #     - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+  #     - ./nginx_logs:/var/log/nginx
+  #     - ./backend_logs:/var/log/backend
+  #   ports:
+  #     - "5000:5000"
+  #   depends_on:
+  #     - elasticsearch
   nginx:
     image: nginx:1.19
     container_name: nginx
@@ -41,6 +41,7 @@ services:
     depends_on:
       - login_backend
       - frontend
+      - tournament
   login_db:
     image: postgres:12
     container_name: login_db
@@ -74,6 +75,25 @@ services:
     depends_on:
       login_db:
         condition: service_healthy
+  tournament:
+    image: tournament
+    container_name: tournament
+    build: 
+      context: ./tournament
+      dockerfile: Dockerfile
+    working_dir: /code
+    restart: always
+    volumes:
+      - ./tournament:/code
+      - ./backend_logs:/code/logs
+    env_file:
+      - .env
+    ports:
+      - "8007:8007"
+    depends_on:
+      login_db:
+        condition: service_healthy
+
   frontend:
     image: frontend
     container_name: frontend
