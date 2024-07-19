@@ -42,7 +42,7 @@ class GetTournamentView(APIView):
             data = json.loads(request.body)
             tournament_id = data.get('id')  # Adjust the tournament ID as needed
             # Call the contract function to get tournament details
-            result = contract.functions.getTournament().call()
+            result = contract.functions.getTournament(tournament_id).call()
 
             # Convert result tuple into a dictionary for JSON response
             tournament_details = {

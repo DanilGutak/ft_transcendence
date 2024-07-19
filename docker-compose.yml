@@ -29,6 +29,22 @@ services:
   #     - "5000:5000"
   #   depends_on:
   #     - elasticsearch
+  frontend:
+    image: frontend
+    container_name: frontend
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile
+    working_dir: /code
+    restart: always
+    volumes:
+      - ./frontend:/code
+      - ./static_volume:/code/staticfiles
+    env_file:
+      - .env
+    depends_on:
+      login_db:
+        condition: service_healthy
   nginx:
     image: nginx:1.19
     container_name: nginx
@@ -38,6 +54,7 @@ services:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
       - ./frontend:/code
       - ./certs/nginx:/etc/nginx/ssl
+      - ./static_volume:/static
     depends_on:
       - login_backend
       - frontend
@@ -94,21 +111,7 @@ services:
       login_db:
         condition: service_healthy
 
-  frontend:
-    image: frontend
-    container_name: frontend
-    build: 
-      context: ./frontend
-      dockerfile: Dockerfile
-    working_dir: /code
-    restart: always
-    volumes:
-      - ./frontend:/code
-    env_file:
-      - .env
-    depends_on:
-      login_db:
-        condition: service_healthy
+  
 networks:
   default:
       driver: bridge

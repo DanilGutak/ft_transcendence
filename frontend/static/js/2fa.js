@@ -47,12 +47,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     if (!response.ok) {
-        throw new Error('Failed to refresh token');
+        console.error(error);;
     }
+    else {
 
     const data = await response.json();
     localStorage.setItem('access-token', data.access);
     localStorage.setItem('refresh-token', data.refresh);
+    }
 }
 
 async function tickbox2fa() {
@@ -160,6 +162,7 @@ function verify2fa() {
     })
     .then(data => {
         // Handle successful verification here
+        localStorage.setItem('loggedIn', 'true');
         errorContainer.classList.add('hidden');
         errorMessage.classList.add('hiddeh');
         successContainer.classList.remove('hidden');

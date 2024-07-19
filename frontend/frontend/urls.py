@@ -14,10 +14,10 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.urls import path
+from django.urls import path, re_path
 from frontend_app.views import *
 
 urlpatterns = [
     path('', render_page, {'page_name': 'home'}, name='Index'),
-    path('<str:page_name>/', render_page, name='render_page')
+    # re_path(r'^.*$', redirect_to_home), 
 ]

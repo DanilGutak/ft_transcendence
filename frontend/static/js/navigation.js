@@ -7,20 +7,34 @@ function hideAllPages() {
 }
 
 function renderPage(path) {
+    if (localStorage.getItem('loggedIn') === 'true') {
+        if (path === 'login' || path === 'register' || path === '2fa') {
+            path = '';
+        }
+    }
+    else {
+        if (path === 'game') {
+            path = '';
+        }
+    }
     hideAllPages();
-    document.getElementById(path).classList.remove('hidden');
+    if (path === null || path === '') {
+        document.getElementById('home').classList.remove('hidden');
+    }
+    else {
+        document.getElementById(path).classList.remove('hidden');
+    }
 }
 
 // Function to handle navigation clicks
 function navigate(event) {
     event.preventDefault();
     const path = event.target.getAttribute('data-path');
-    history.pushState(null, null, window.location.origin + "/"+path);
+    history.pushState({ path }, null, window.location.origin);
     renderPage(path);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const content = document.getElementById('content');
     const navLinks = document.querySelectorAll('.nav-item.nav-link');
 
     // Define content for each route
@@ -34,9 +48,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Handle back/forward navigation
-    window.addEventListener('popstate', () => {
-        renderPage(window.location.pathname);
+    window.addEventListener('popstate', (event) => {
+        const path = event.state ? event.state.path : '';
+        renderPage(path);
     });
-
-    // Render the initial page based on the current path
 });
