@@ -18,8 +18,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function checkLogin() {
+  localStorage.setItem('loggedIn', 'false');
   const accessToken = localStorage.getItem('access-token');
-  const refreshToken = localStorage.getItem('refresh-token');
+  const refreshToken2 = localStorage.getItem('refresh-token');
   if (accessToken) {
     const response = await fetch('/api/loggedin/', {
       method: 'GET',
@@ -29,20 +30,22 @@ async function checkLogin() {
       }
     });
     if (response.ok) {
+      localStorage.setItem('loggedIn', 'true');
       document.getElementById('logged-in').classList.remove('hidden');
       document.getElementById('logged-out').classList.add('hidden');
     }
     else if (response.status === 401) {
-      if (refreshToken) {
+      if (refreshToken2) {
         await refreshToken();
-        let response = await fetch('/api/loggedin', {
+        let response = await fetch('/api/loggedin/', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'athorization': `Bearer ${localStorage.getItem('access-token')}`
+            'authorization': `Bearer ${localStorage.getItem('access-token')}`
       }})
 
         if (response.ok) {
+          localStorage.setItem('loggedIn', 'true');
           document.getElementById('logged-in').classList.remove('hidden');
           document.getElementById('logged-out').classList.add('hidden');
       }
@@ -64,9 +67,9 @@ async function checkLogin() {
 
 async function logout() {
   const accessToken = localStorage.getItem('access-token');
-  const refreshToken = localStorage.getItem('refresh-token');
+  const refreshToken2 = localStorage.getItem('refresh-token');
   const data = {
-    refresh: refreshToken
+    refresh: refreshToken2
   };
   let response = await fetch('/api/logout/', {
     method: 'POST',
@@ -78,13 +81,13 @@ async function logout() {
   })
   if (response.status === 401) {
     await refreshToken();
-    accessToken = localStorage.getItem('access-token');
     logout();
   }
   else if (!response.ok) {
     handleFailure("Failed to logout");
   }
   else {
+  localStorage.setItem('loggedIn', 'false');
   handleSuccess("Logged out successfully");
   localStorage.removeItem('access-token');
   localStorage.removeItem('refresh-token');
@@ -100,7 +103,6 @@ function login() {
   const errorContainer = document.getElementById('error-container');
   const successMessage = document.getElementById('success-message');
   const successContainer = document.getElementById('success-container');
-  const container = document.getElementById('login');
   const data = {
     username: username,
     password: password
@@ -140,6 +142,7 @@ function login() {
     else
     {
       successContainer.classList.remove('hidden');
+      localStorage.setItem('loggedIn', 'true');
       successMessage.innerHTML = '<strong>Logged in succesfully!</strong>';
       document.getElementById('login-username').value = '';
       document.getElementById('login-password').value = '';

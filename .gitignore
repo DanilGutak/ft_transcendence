@@ -13,7 +13,16 @@ elasticsearch/
 */*/migrations/
 migrations/
 **/migrations/
-
+static_volume/
+**/staticfiles/
 # ignoring the folder configuration file on Mac
 .DS_Store
 **/.DS_Store
+tests/
+scripts/
+**/logs/
+contracts/
+.states/
+artifacts/
+kek.py
+ghjgh/

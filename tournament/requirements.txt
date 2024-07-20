@@ -1,0 +1,10 @@
+Django>=3.2,<5.0
+psycopg2-binary
+django-bootstrap-v5
+djangorestframework
+markdown
+django-filter
+django-cors-headers
+djangorestframework-simplejwt
+django-two-factor-auth
+web3

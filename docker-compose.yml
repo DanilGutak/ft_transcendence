@@ -1,34 +1,50 @@
 services:
-  elasticsearch:
-    image: elasticsearch:7.17.0
-    container_name: elasticsearch
-    environment:
-      - discovery.type=single-node
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    ports:
-      - "9200:9200"
+  # elasticsearch:
+  #   image: elasticsearch:7.17.0
+  #   container_name: elasticsearch
+  #   environment:
+  #     - discovery.type=single-node
+  #     - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+  #   ports:
+  #     - "9200:9200"
+  #   volumes:
+  #     - ./elasticsearch:/usr/share/elasticsearch/data
+  # kibana:
+  #   image: kibana:7.17.0
+  #   container_name: kibana
+  #   environment:
+  #     ELASTICSEARCH_HOSTS: "http://elasticsearch:9200"
+  #   ports:
+  #     - "5601:5601"
+  #   depends_on:
+  #     - elasticsearch
+  # logstash:
+  #   image: logstash:7.17.0
+  #   container_name: logstash
+  #   volumes:
+  #     - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+  #     - ./nginx_logs:/var/log/nginx
+  #     - ./backend_logs:/var/log/backend
+  #   ports:
+  #     - "5000:5000"
+  #   depends_on:
+  #     - elasticsearch
+  frontend:
+    image: frontend
+    container_name: frontend
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile
+    working_dir: /code
+    restart: always
     volumes:
-      - ./elasticsearch:/usr/share/elasticsearch/data
-  kibana:
-    image: kibana:7.17.0
-    container_name: kibana
-    environment:
-      ELASTICSEARCH_HOSTS: "http://elasticsearch:9200"
-    ports:
-      - "5601:5601"
+      - ./frontend:/code
+      - ./static_volume:/code/staticfiles
+    env_file:
+      - .env
     depends_on:
-      - elasticsearch
-  logstash:
-    image: logstash:7.17.0
-    container_name: logstash
-    volumes:
-      - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
-      - ./nginx_logs:/var/log/nginx
-      - ./backend_logs:/var/log/backend
-    ports:
-      - "5000:5000"
-    depends_on:
-      - elasticsearch
+      login_db:
+        condition: service_healthy
   nginx:
     image: nginx:1.19
     container_name: nginx
@@ -38,9 +54,11 @@ services:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
       - ./frontend:/code
       - ./certs/nginx:/etc/nginx/ssl
+      - ./static_volume:/static
     depends_on:
       - login_backend
       - frontend
+      - tournament
   login_db:
     image: postgres:12
     container_name: login_db
@@ -74,21 +92,26 @@ services:
     depends_on:
       login_db:
         condition: service_healthy
-  frontend:
-    image: frontend
-    container_name: frontend
+  tournament:
+    image: tournament
+    container_name: tournament
     build: 
-      context: ./frontend
+      context: ./tournament
       dockerfile: Dockerfile
     working_dir: /code
     restart: always
     volumes:
-      - ./frontend:/code
+      - ./tournament:/code
+      - ./backend_logs:/code/logs
     env_file:
       - .env
+    ports:
+      - "8007:8007"
     depends_on:
       login_db:
         condition: service_healthy
+
+  
 networks:
   default:
       driver: bridge
