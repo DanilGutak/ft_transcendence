@@ -28,6 +28,9 @@ ALLOWED_HOSTS = ['localhost']
 # Application definition
 SECURE_SSL_REDIRECT = True
 
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 INSTALLED_APPS = [
@@ -90,10 +93,10 @@ WSGI_APPLICATION = 'frontend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('POSTGRES_DB'), 
-        'USER': os.environ.get('POSTGRES_USER'),
-        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-        'HOST': 'login_db', 
+        'NAME': os.environ.get('POSTGRES_DB2'), 
+        'USER': os.environ.get('POSTGRES_USER2'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD2'),
+        'HOST': 'frontend_db', 
         'PORT': '5432',
     }
 }

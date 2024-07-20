@@ -2,7 +2,12 @@ document.addEventListener('DOMContentLoaded', () => {
   checkLogin();
   const loginForm = document.getElementById('login-button');
   loginForm.addEventListener('click', function(event) {
+    loginForm.disabled = true;
     login();
+    setTimeout(() => {
+      loginForm.disabled = false;
+    }, 2500);
+
   });
   const registerForm = document.getElementById('register-button');
   registerForm.addEventListener('click', function(event) {
@@ -157,7 +162,9 @@ function login() {
 .catch(error => {
     errorContainer.classList.remove('hidden');
     errorMessage.classList.remove('hidden');
-    errorMessage.innerHTML = '<strong>Login failed! Try again later</strong>';
+    setTimeout(() => {
+      errorMessage.innerHTML = '<strong>Login failed! Try again later</strong>';
+    }, 2000);
     // Show error message on failed login
 });
 }
