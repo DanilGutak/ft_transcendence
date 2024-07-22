@@ -1,34 +1,49 @@
 services:
-  # elasticsearch:
-  #   image: elasticsearch:7.17.0
-  #   container_name: elasticsearch
-  #   environment:
-  #     - discovery.type=single-node
-  #     - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-  #   ports:
-  #     - "9200:9200"
-  #   volumes:
-  #     - ./elasticsearch:/usr/share/elasticsearch/data
-  # kibana:
-  #   image: kibana:7.17.0
-  #   container_name: kibana
-  #   environment:
-  #     ELASTICSEARCH_HOSTS: "http://elasticsearch:9200"
-  #   ports:
-  #     - "5601:5601"
-  #   depends_on:
-  #     - elasticsearch
-  # logstash:
-  #   image: logstash:7.17.0
-  #   container_name: logstash
-  #   volumes:
-  #     - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
-  #     - ./nginx_logs:/var/log/nginx
-  #     - ./backend_logs:/var/log/backend
-  #   ports:
-  #     - "5000:5000"
-  #   depends_on:
-  #     - elasticsearch
+  init-elasticsearch:
+    image: alpine/curl:8.8.0
+    container_name: init-elasticsearch
+    environment:
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+    volumes:
+      - ./init_elasticsearch.sh:/init_elasticsearch.sh
+    entrypoint: "sh init_elasticsearch.sh"
+    depends_on:
+      - elasticsearch
+  elasticsearch:
+    image: elasticsearch:7.17.0
+    container_name: elasticsearch
+    environment:
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+    ports:
+      - "9200:9200"
+    volumes:
+      - ./certs:/usr/share/elasticsearch/config/certs
+      - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+  kibana:
+    image: kibana:7.17.0
+    container_name: kibana
+    environment:
+      - KIBANA_PASSWORD=${ELASTIC_PASSWORD}
+    ports:
+      - "5601:5601"
+    volumes:
+      - ./certs:/usr/share/kibana/config/certs
+      - ./kibana.yml:/usr/share/kibana/config/kibana.yml
+    depends_on:
+      - elasticsearch
+  logstash:
+    image: logstash:7.17.0
+    container_name: logstash
+    volumes:
+      - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+      - ./nginx_logs:/var/log/nginx
+      - ./backend_logs:/var/log/backend
+      - ./certs:/usr/share/logstash/config/certs
+      - ./logstash.yml:/usr/share/logstash/config/logstash.yml
+    environment:
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+    depends_on:
+      - elasticsearch
   frontend:
     image: frontend
     container_name: frontend
@@ -44,18 +59,6 @@ services:
       - .env
     depends_on:
       - elasticsearch
-  logstash:
-    image: logstash:7.17.0
-    container_name: logstash
-    volumes:
-      - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
-      - ./nginx_logs:/var/log/nginx
-      - ./backend_logs:/var/log/backend
-    ports:
-      - "5000:5000"
-    depends_on:
-      frontend_db:
-        condition: service_healthy
   nginx:
     image: nginx:1.19
     container_name: nginx
@@ -87,8 +90,10 @@ services:
       start_period: 2s
     volumes:
       - ./postgres:/var/lib/postgresql/data
+      - ./pg_hba.conf:/var/lib/postgresql/data/pg_hba.conf
   frontend_db:
     image: postgres:12
+    command: ["postgres", "-c", "hba_file=/etc/postgresql/pg_hba.conf"]
     container_name: frontend_db
     environment:
       POSTGRES_USER: $POSTGRES_USER2
@@ -102,8 +107,11 @@ services:
       timeout: 30s
       retries: 10
       start_period: 2s
+    volumes:
+      - ./pg_hba.conf:/etc/postgresql/pg_hba.conf
   tournament_db:
     image: postgres:12
+    command: ["postgres", "-c", "hba_file=/etc/postgresql/pg_hba.conf"]
     container_name: tournament_db
     environment:
       POSTGRES_USER: $POSTGRES_USER3
@@ -117,6 +125,8 @@ services:
       timeout: 30s
       retries: 10
       start_period: 2s
+    volumes:
+      - ./pg_hba.conf:/etc/postgresql/pg_hba.conf
   login_backend:
     image: login_backend
     container_name: login_backend
