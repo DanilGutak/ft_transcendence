@@ -57,8 +57,6 @@ services:
       - ./static_volume:/code/staticfiles
     env_file:
       - .env
-    depends_on:
-      - elasticsearch
   nginx:
     image: nginx:1.19
     container_name: nginx
