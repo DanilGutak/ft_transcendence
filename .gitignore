@@ -4,7 +4,6 @@ db.sqlite3
 postgres/
 nginx_logs/
 backend_logs/
-certs/
 elasticsearch/
 .env
 

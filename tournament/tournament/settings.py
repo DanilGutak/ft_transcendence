@@ -30,7 +30,6 @@ INSTALLED_APPS = [
     "web3",
     "tournament_app",
     "rest_framework",
-    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -38,6 +37,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
 ]
+
+SECURE_SSL_REDIRECT = True
+
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# Application definiti
+
 
 
 MIDDLEWARE = [
@@ -78,10 +86,10 @@ WSGI_APPLICATION = 'tournament.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('POSTGRES_DB'), 
-        'USER': os.environ.get('POSTGRES_USER'),
-        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-        'HOST': 'login_db', 
+        'NAME': os.environ.get('POSTGRES_DB3'), 
+        'USER': os.environ.get('POSTGRES_USER3'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD3'),
+        'HOST': 'tournament_db', 
         'PORT': '5432',
     }
 }
