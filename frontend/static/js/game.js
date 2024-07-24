@@ -15,15 +15,16 @@ const player1 = {
     y: (canvas.height - paddleHeight) / 2,
     width: paddleWidth,
     height: paddleHeight,
-    color: '#F0F',
+    color: '#FFF',
     score: 0
 };
+
 const player2 = {
     x: canvas.width - paddleWidth - 5,
     y: (canvas.height - paddleHeight) / 2,
     width: paddleWidth,
     height: paddleHeight,
-    color: '#FF0',
+    color: '#FFF',
     score: 0
 };
 
@@ -207,5 +208,4 @@ function startGame() {
     gameState = 1;
     requestAnimationFrame(gameLoop);
 }
-
 
