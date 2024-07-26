@@ -8,7 +8,7 @@ const paddleSpeed = 10;
 
 const ballRadius = 10;
 
-const maximumPlayScore = 10;
+const startingPlayScore = 10;
 
 const player1 = {
     x: (canvas.width - paddleWidth) / 2,
@@ -16,7 +16,7 @@ const player1 = {
     width: paddleWidth,
     height: paddleHeight,
     color: '#FFF',
-    score: 0
+    score: startingPlayScore
 };
 
 const player2 = {
@@ -25,7 +25,7 @@ const player2 = {
     width: paddleWidth,
     height: paddleHeight,
     color: '#FFF',
-    score: 0
+    score: startingPlayScore
 };
 
 const player3 = {
@@ -34,7 +34,7 @@ const player3 = {
     width: paddleHeight,
     height: paddleWidth,
     color: '#FFF',
-    score: 0
+    score: startingPlayScore
 };
 
 const player4 = {
@@ -43,7 +43,7 @@ const player4 = {
     width: paddleHeight,
     height: paddleWidth,
     color: '#FFF',
-    score: 0
+    score: startingPlayScore
 };
 
 const ball = {
@@ -174,19 +174,19 @@ function moveBall() {
     }
     // Ball out of bounds
     else if (ball.y + ball.radius > canvas.height) {
-        player2.score++;
+        player1.score--;
         resetBall();
     }
     else if (ball.y - ball.radius < 0) {
-        player1.score++;
+        player2.score--;
         resetBall();
     }
     else if (ball.x - ball.radius < 0) {
-        player4.score++;
+        player3.score--;
         resetBall();
     }
     else if (ball.x + ball.radius > canvas.width) {
-        player3.score++;
+        player4.score--;
         resetBall();
     }
 }
@@ -203,8 +203,8 @@ function render() {
 }
 
 function checkGameOver() {
-    if (player1.score >= maximumPlayScore || player2.score >= maximumPlayScore
-        || player3.score >= maximumPlayScore || player4.score >= maximumPlayScore) {
+    if (player1.score == 0 || player2.score == 0
+        || player3.score == 0 || player4.score == 0) {
         gameStateFor4 = 0;
     }
 }
@@ -273,31 +273,15 @@ function updatePaddles() {
     }
 }
 
-function readAliases() {
-    const data = document.getElementById('aliases').value;
-    const names = data.split(',');
-    if (names.length < 4) {
-        player1.name = document.createTextNode('Player 1');
-        player2.name = document.createTextNode('Player 2');
-        player3.name = document.createTextNode('Player 3');
-        player4.name = document.createTextNode('Player 4');
-    } else {
-        player1.name = document.createTextNode(names[0]);
-        player2.name = document.createTextNode(names[1]);
-        player3.name = document.createTextNode(names[2]);
-        player4.name = document.createTextNode(names[3]);
-    }
-}
 
 function startGame() {
     if (gameStateFor4 === 1) {
         return;
     }
-    readAliases();
-    player1.score = 0;
-    player2.score = 0;
-    player3.score = 0;
-    player4.score = 0;
+    player1.score = startingPlayScore;
+    player2.score = startingPlayScore;
+    player3.score = startingPlayScore;
+    player4.score = startingPlayScore;
     gameStateFor4 = 1;
     requestAnimationFrame(gameLoop);
 }

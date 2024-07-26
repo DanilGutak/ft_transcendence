@@ -182,27 +182,11 @@ function updatePaddles() {
 
 
 
-function readAliases()
-{
-   
-    const data = document.getElementById('aliases').value;
-    const names = data.split(',');
-    if (names.length < 2) {
-        player1.name = document.createTextNode('Player 1');
-        player2.name = document.createTextNode('Player 2');
-        return;
-    }
-    else
-        player1.name = document.createTextNode(names[0]);
-        player2.name = document.createTextNode(names[1]);
-}
-
 function startGame() {
 
     if (gameState === 1) {
         return;
     }
-    readAliases();
     player1.score = 0;
     player2.score = 0;
     gameState = 1;

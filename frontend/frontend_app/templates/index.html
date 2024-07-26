@@ -22,50 +22,52 @@
                 <a class="navbar-brand">Transcendence</a>     
                 <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                     <div id="logged-out">
-                    <div class="navbar-nav" id="logged_out">
-                        <a class="nav-item nav-link" href="/home" data-path="home">Home</a>
-                        <a class="nav-item nav-link" href="/login" data-path="login">Login</a>
-                        <a class="nav-item nav-link" href="/register" data-path="register">Register</a>
+                        <div class="navbar-nav" id="logged_out">
+                            <a class="nav-item nav-link" href="/home" data-path="home">Home</a>
+                            <a class="nav-item nav-link" href="/login" data-path="login">Login</a>
+                            <a class="nav-item nav-link" href="/register" data-path="register">Register</a>
+                        </div>
                     </div>
-                </div>
                     <div id="logged-in" class="hidden">
-                    <div class="navbar-nav hidden" id="logged_in">
-                        <a class="hidden nav-item nav-link" href="/home" data-path="home">Home</a>
-                        <a class="nav-item nav-link" href="/game" data-path="game">Game</a>
-                        <a class="nav-item nav-link" href="/gameFor4" data-path="gameFor4">Game for 4</a>
-                        <button id="logout-button" class="btn btn-primary">Logout</button>
-                        <label for="2fa-tickbox">2FA Enabled:</label>
-                        <input type="checkbox" id="2fa-tickbox" name="2fa-tickbox" class="mb-3">
-                    </div>
+                        <div class="navbar-nav hidden" id="logged_in">
+                            <a class="hidden nav-item nav-link" href="/home" data-path="home">Home</a>
+                            <a class="nav-item nav-link" href="/game" data-path="game">Game</a>
+                            <a class="nav-item nav-link" href="/gameFor4" data-path="gameFor4">Game for 4</a>
+                            <button id="logout-button" class="btn btn-primary">Logout</button>
+                            <label for="2fa-tickbox">2FA Enabled:</label>
+                            <input type="checkbox" id="2fa-tickbox" name="2fa-tickbox" class="mb-3">
+                        </div>
                     </div>
                 </div>
             </nav>
         </div>
         <div id="view">
             <div id="success-container"  class="hidden"  > 
-            <div id="success-message" class="alert alert-success"></div></div>
+                <div id="success-message" class="alert alert-success">
+                </div>
+            </div>
             <div id="error-container" class="hidden">
-            <div id="error-message" class="alert alert-danger"></div></div>
+                <div id="error-message" class="alert alert-danger">
+                </div>
+            </div>
             {% include '2fa.html' %}
             {% include 'home.html' %}
             {% include 'login.html' %}
             {% include 'register.html' %}
             {% include 'game.html' %}
             {% include 'gameFor4.html' %}
-            
-            </div>
-            <script src="{% static 'js/navigation.js' %}" defer></script>
-            <script src="{% static 'js/login.js' %}"></script>
-            <script src="{% static 'js/register.js' %}"></script>
-            <script src="{% static 'js/2fa.js' %}"></script>
-            <script src="{% static 'js/game.js' %}"></script>
-            <script src="{% static 'js/gameFor4.js' %}"></script>
-            <script
-                src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-            <script
-                src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-            <script
-                src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-        </body>
-    </html>
+        </div>
+        <script src="{% static 'js/navigation.js' %}" defer></script>
+        <script src="{% static 'js/login.js' %}"></script>
+        <script src="{% static 'js/register.js' %}"></script>
+        <script src="{% static 'js/2fa.js' %}"></script>
+        <script src="{% static 'js/game.js' %}"></script>
+        <script src="{% static 'js/gameFor4.js' %}"></script>
+        <script
+            src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+        <script
+            src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    </body>
+</html>
