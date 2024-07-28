@@ -15,15 +15,16 @@ const player1 = {
     y: (canvas.height - paddleHeight) / 2,
     width: paddleWidth,
     height: paddleHeight,
-    color: '#F0F',
+    color: '#FFF',
     score: 0
 };
+
 const player2 = {
     x: canvas.width - paddleWidth - 5,
     y: (canvas.height - paddleHeight) / 2,
     width: paddleWidth,
     height: paddleHeight,
-    color: '#FF0',
+    color: '#FFF',
     score: 0
 };
 
@@ -181,31 +182,14 @@ function updatePaddles() {
 
 
 
-function readAliases()
-{
-   
-    const data = document.getElementById('aliases').value;
-    const names = data.split(',');
-    if (names.length < 2) {
-        player1.name = document.createTextNode('Player 1');
-        player2.name = document.createTextNode('Player 2');
-        return;
-    }
-    else
-        player1.name = document.createTextNode(names[0]);
-        player2.name = document.createTextNode(names[1]);
-}
-
 function startGame() {
 
     if (gameState === 1) {
         return;
     }
-    readAliases();
     player1.score = 0;
     player2.score = 0;
     gameState = 1;
     requestAnimationFrame(gameLoop);
 }
-
 
