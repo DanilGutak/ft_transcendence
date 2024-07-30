@@ -122,6 +122,7 @@ function tournament() {
         thirdPlaceContenders = [];
         tournamentResults = [];
         startNextMatch();
+        requestAnimationFrame(gameLoop);
     }
 
     function startNextMatch() {
@@ -145,7 +146,6 @@ function tournament() {
         }
 
         resetMatch();
-        requestAnimationFrame(gameLoop);
     }
 
     function resetMatch() {
