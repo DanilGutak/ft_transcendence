@@ -8,13 +8,6 @@ from .eth import w3, contract, account, private_key
 import json
 import os
 
-
-
-class PostTournamentView(APIView):
-    def post(self, request):
-        # send the number
-        tournament_name = request.data['tournament_name']
-        return JsonResponse({'message': 'Tournament created successfully'}, status=201)
 class PostTournamentView(APIView):
     def post(self, request):
         data = json.loads(request.body)

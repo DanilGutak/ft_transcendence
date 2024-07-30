@@ -1,0 +1,15 @@
+{% load static %}
+<div id="tournament" class="page {% if not tournament %}hidden{% endif %}">
+    <div class="container">
+        <br>
+        <div class="row">
+            <div class="col-md-6 mx-auto">
+                <button id="tournament-button" type="button"
+                    class="btn btn-primary ">Tournament</button>
+            </div>
+        </div>
+    </div>
+
+    <br>
+    <canvas id="tournament-canvas" width="750" height="600" ></canvas>
+</div>
