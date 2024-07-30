@@ -115,16 +115,28 @@ function tournament() {
       }
   }
 
-  function startTournament() {
-      gameState = 1;
-      tournamentStage = 'semi-finals';
-      remainingPlayers = [...players];
-      finalists = [];
-      thirdPlaceContenders = [];
-      tournamentResults = [];
-      startNextMatch();
-      requestAnimationFrame(gameLoop);
-  }
+  function startTournament(event) {
+    event.preventDefault(); // Prevent form submission
+    
+    // Get player names from input fields
+    for (let i = 1; i <= 4; i++) {
+        const inputValue = document.getElementById(`player${i}`).value.trim();
+        players[i-1].name = inputValue || `Player ${i}`;
+    }
+
+    gameState = 1;
+    tournamentStage = 'semi-finals';
+    remainingPlayers = [...players];
+    finalists = [];
+    thirdPlaceContenders = [];
+    tournamentResults = [];
+    startNextMatch();
+    requestAnimationFrame(gameLoop);
+
+    // Hide the form and show the canvas
+    document.getElementById('player-names-form').style.display = 'none';
+    document.getElementById('tournament-canvas').style.display = 'block';
+}
 
   function startNextMatch() {
       resetBall();
@@ -246,13 +258,14 @@ function tournament() {
       }
   });
 
-  const gameForm = document.getElementById('tournament-button');
-  gameForm.addEventListener('click', function(event) {
-      if (gameState === 0) {
-          startTournament();
-      }
-  });
-
+  // const gameForm = document.getElementById('tournament-button');
+  // gameForm.addEventListener('click', function(event) {
+  //     if (gameState === 0) {
+  //         startTournament();
+  //     }
+  // });
+  const gameForm = document.getElementById('player-names-form');
+  gameForm.addEventListener('submit', startTournament);
   async function sendTournamentResults(results) {
     const data = {
         place1: results[0].name,
@@ -274,3 +287,5 @@ function tournament() {
     });
   }
 }
+
+document.getElementById('tournament-canvas').style.display = 'none';
