@@ -1,0 +1,22 @@
+{% load static %}
+<div id="tournament" class="page {% if not tournament %}hidden{% endif %}">
+    <div class="container">
+        <br>
+        <div class="row">
+            <div class="col-md-6 mx-auto">
+                <form id="player-names-form">
+                    <div class="form-group">
+                        <input type="text" class="form-control mb-2" id="player1" placeholder="Player 1 Name">
+                        <input type="text" class="form-control mb-2" id="player2" placeholder="Player 2 Name">
+                        <input type="text" class="form-control mb-2" id="player3" placeholder="Player 3 Name">
+                        <input type="text" class="form-control mb-2" id="player4" placeholder="Player 4 Name">
+                    </div>
+                    <button id="tournament-button" type="submit" class="btn btn-primary">Start Tournament</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <br>
+    <canvas id="tournament-canvas" width="750" height="600"></canvas>
+</div>
