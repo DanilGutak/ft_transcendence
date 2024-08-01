@@ -46,11 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
         body: JSON.stringify({ refresh: refreshToken }),
     });
 
-    if (!response.ok) {
-        console.error(error);;
-    }
-    else {
-
+    if (response.ok) {
     const data = await response.json();
     localStorage.setItem('access-token', data.access);
     localStorage.setItem('refresh-token', data.refresh);

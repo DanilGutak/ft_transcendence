@@ -277,15 +277,22 @@ function tournament() {
     const response = await fetch('/api/tournament/post', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('access-token')
         },
         body: JSON.stringify(data)
     })
-    .then(response => response.json())
-    .catch((error) => {
-        console.error('Error:', error);
-    });
-  }
-}
+    if (response.status === 401) {
+        await refreshToken();
+        const response2 = await fetch('/api/tournament/post', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.getItem('access-token')
+            },
+            body: JSON.stringify(data)
+        })
+    }
+}}
 
 document.getElementById('tournament-canvas').style.display = 'none';

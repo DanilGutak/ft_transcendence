@@ -259,16 +259,16 @@ function updatePaddles() {
     if (keyStateFor4['ArrowLeft'] && player2.x > 0) {
         player2.x -= paddleSpeed;
     }
-    if (keyStateFor4['ArrowUp'] && player3.y > 0) {
+    if (keyStateFor4['y'] && player3.y > 0) {
         player3.y -= paddleSpeed;
     }
-    if (keyStateFor4['ArrowDown'] && player3.y + paddleWidth < canvas.height) {
+    if (keyStateFor4['i'] && player3.y + paddleWidth < canvas.height) {
         player3.y += paddleSpeed;
     }
-    if (keyStateFor4['w'] && player4.y > 0) {
+    if (keyStateFor4['b'] && player4.y > 0) {
         player4.y -= paddleSpeed;
     }
-    if (keyStateFor4['s'] && player4.y + paddleWidth < canvas.height) {
+    if (keyStateFor4['m'] && player4.y + paddleWidth < canvas.height) {
         player4.y += paddleSpeed;
     }
 }

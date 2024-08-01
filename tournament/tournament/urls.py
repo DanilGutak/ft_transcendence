@@ -19,5 +19,4 @@ from tournament_app.views import *
 
 urlpatterns = [
     path('api/tournament/post', PostTournamentView.as_view(), name='PostTournament'),
-    path('api/tournament/get', GetTournamentView.as_view(), name='GetTournament'),
 ]

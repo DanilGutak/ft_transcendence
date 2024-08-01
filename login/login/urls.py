@@ -24,6 +24,7 @@ urlpatterns = [
     path('api/login/',LoginView.as_view() , name='Login'),
     path('api/register/',RegisterView.as_view() , name='Register'),
     path('api/token/refresh', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/token/verify', jwt_views.TokenVerifyView.as_view(), name='token_verify'),
     path('api/logout/', LogoutView.as_view(), name='Logout'),
     path('api/loggedin/', LoggedInView.as_view(), name='LoggedIn'),
     path('api/2fa/send', SendTwoFactorAuthView.as_view(), name='SendTwoFactorAuth'),

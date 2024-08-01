@@ -11,12 +11,14 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
+import requests
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
+# requests.post("https://login_backend/api/token/verify", data={ "token": os.environ.get('TOURNAMENT_SECURITY_KEY') })
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
@@ -37,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
 ]
+
+LOGIN_BACKEND_URL = "http://login_backend:8000"
 
 SECURE_SSL_REDIRECT = True
 
