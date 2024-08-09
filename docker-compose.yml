@@ -70,7 +70,6 @@ services:
     depends_on:
       - login_backend
       - frontend
-      - tournament
   login_db:
     image: postgres:12
     container_name: login_db
@@ -158,8 +157,9 @@ services:
     ports:
       - "8007:8007"
     depends_on:
-      tournament_db:
-        condition: service_healthy
+      - nginx
+      - tournament_db 
+      
 
   
 networks:
