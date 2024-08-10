@@ -26,7 +26,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('TOURNAMENT_SECURITY_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-
 ALLOWED_HOSTS = ["*"]
 INSTALLED_APPS = [
     "web3",
@@ -39,9 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
 ]
-
-LOGIN_BACKEND_URL = "http://login_backend:8000"
-
 SECURE_SSL_REDIRECT = True
 
 CSRF_COOKIE_SECURE = True
@@ -49,6 +45,7 @@ SESSION_COOKIE_SECURE = True
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # Application definiti
+
 
 
 

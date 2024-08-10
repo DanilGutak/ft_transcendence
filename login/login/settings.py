@@ -26,7 +26,7 @@ SECRET_KEY = os.environ.get('LOGIN_SECURITY_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = ['localhost','login', 'nginx']
 
 LOGGING = {
     'version': 1,

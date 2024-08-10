@@ -16,8 +16,7 @@ class PostTournamentView(APIView):
                 return JsonResponse({'error': 'Authorization header is missing'}, status=401)
             token = auth_header.split(' ')[1]
             response = requests.post(
-                f"{settings.LOGIN_BACKEND_URL}/api/token/verify/",
-                headers={"Authorization": auth_header},
+                "https://nginx:443/api/token/verify", verify=False, 
                 json={'token': token }
             )
             if response.status_code != 200:
@@ -39,6 +38,6 @@ class PostTournamentView(APIView):
             signed_txn = w3.eth.account.sign_transaction(transaction, private_key)
             txn_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
             receipt = w3.eth.wait_for_transaction_receipt(txn_hash)
-            return JsonResponse({'message': 'User created successfully'}, status=201)
-        except Exception as e:
-            return JsonResponse({'error': "Blockchain is not working"}, status=400)
+            return JsonResponse({'message': 'Results were send to blockchain successfully'}, status=201)
+        except Exception as e:  
+            return JsonResponse({'error': "could not send results to blochain"}, status=400)

@@ -13,7 +13,7 @@ function renderPage(path) {
         }
     }
     else {
-        if (path === 'game') {
+        if (path === 'game' || path === 'gameFor4' || path === 'tournament') {
             path = '';
         }
     }
