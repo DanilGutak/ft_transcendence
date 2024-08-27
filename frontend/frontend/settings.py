@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('FRONTEND_SECURITY_KEY')
 
 
-ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = ['frontend', 'localhost', '127.0.0.1']
 # Application definition
 SECURE_SSL_REDIRECT = True
 

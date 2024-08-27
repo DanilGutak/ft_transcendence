@@ -9,11 +9,13 @@ RUN apt-get update \
         gcc \
         gettext \
         postgresql-client \
+		iputils-ping \
     && rm -rf /var/lib/apt/lists/*
 COPY requirements.txt /requirements.txt
 RUN pip install --upgrade pip \
-    && pip install -r requirements.txt
+    && pip install --no-cache-dir -r requirements.txt
 
+# wait for postgres
 
 EXPOSE 8007
 
