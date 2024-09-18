@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JWT Login</title>
+</head>
+<body>
+    <div id="login-message"></div>
+    <script>
+        // Simple function to get query parameters from the URL
+        function getQueryParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        // Function to handle JWT login
+        function handleJWTLogin() {
+            const refresh = getQueryParameter('refresh');
+            const access = getQueryParameter('access');
+
+            const loginMessage = document.getElementById('login-message');
+
+            if (refresh && access) {
+                localStorage.setItem('refresh_token', refresh);
+                if (typeof window.setJWT === 'function') {
+                    window.setJWT(access);
+                }
+                if (typeof window.reconnectWebSocket === 'function') {
+                    window.reconnectWebSocket();
+                }
+                loginMessage.textContent = 'Authentication successful. Redirecting...';
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 1000); // Redirect after a short delay
+            } else {
+                loginMessage.textContent = 'Authentication failed. Redirecting to login...';
+                setTimeout(() => {
+                    window.location.href = '/login';
+                }, 1000); // Redirect after a short delay
+            }
+        }
+
+        // Run the JWT login handler when the script loads
+        handleJWTLogin();
+    </script>
+</body>
+</html>

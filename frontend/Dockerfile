@@ -10,6 +10,7 @@ RUN apt-get update \
         gettext \
         postgresql-client \
 		iputils-ping \
+		netcat-openbsd \
     && rm -rf /var/lib/apt/lists/*
 COPY requirements.txt /requirements.txt
 RUN pip install --upgrade pip \

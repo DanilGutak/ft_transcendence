@@ -38,6 +38,7 @@ function register() {
     })
     .then(response => {
         if (!response.ok) {
+			console.log(response);
             return response.json().then(err => {
                 throw err;
             });
@@ -47,6 +48,7 @@ function register() {
     .then(data => {
         // Handle successful registration here
         handleSuccess("Registered successfully");
+		// Clear the form
         username.value = '';
         email.value = '';
         password.value = '';
@@ -54,25 +56,24 @@ function register() {
         renderPage('login');
     })
     .catch(error => {
-        errorContainer.classList.remove('hidden');
-        errorMessage.innerHTML = '<strong>Register failed:<br>';
-        for (const [key, value] of Object.entries(error)) {
-            if (key === 'password2') {
-                errorMessage.innerHTML += `Repeated Password: ${value}<br>`;
-            }
-            else if (key === 'detail') {
-                errorMessage.innerHTML += `Try again later!<br>`;
-            }
-            else
-            {
-                key2 = key.charAt(0).toUpperCase() + key.slice(1);
-                // remove commas from the error message
-                errorMessage.innerHTML += `${key2}: ${value.join(' ').replace(/,/g, ' ')}<br>`;
-            }
-
-
-        }
-        errorMessage.innerHTML += '</strong>';
-        
-    });
+		errorContainer.classList.remove('hidden');
+		errorMessage.innerHTML = '<strong>Register failed:<br>';
+	
+		for (const [key, value] of Object.entries(error)) {
+			let formattedMessage;
+			if (key === 'password2') {
+				formattedMessage = `Repeated Password: ${value}<br>`;
+			} else if (key === 'detail') {
+				formattedMessage = `Try again later!<br>`;
+			} else {
+				// Capitalize the first letter of the key and remove commas from the error message
+				let key2 = key.charAt(0).toUpperCase() + key.slice(1);
+				formattedMessage = `${key2}: ${value.join(' ').replace(/,/g, ' ')}<br>`;
+			}
+			errorMessage.innerHTML += formattedMessage;
+		}
+		
+		errorMessage.innerHTML += '</strong>';
+	});
+	
 }

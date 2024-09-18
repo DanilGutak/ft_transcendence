@@ -80,7 +80,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
 # Ensure you have the following security settings when DEBUG is False
-DEBUG = False
+DEBUG = True
 
 WSGI_APPLICATION = 'frontend.wsgi.application'
 

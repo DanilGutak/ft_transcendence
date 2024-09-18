@@ -16,13 +16,17 @@ class RegisterSerializer(serializers.ModelSerializer):
         model = User
         fields = ['username','email', 'password', 'password2']
     def validate(self, attrs):
+        if attrs['password'] == '' or attrs['password2'] == '':
+            raise serializers.ValidationError({'password': 'Password fields cannot be empty'})
         if attrs['password'] != attrs['password2']:
             raise serializers.ValidationError({'password': 'Password fields did not match'})
         return attrs
     def create(self, validated_data):
-        user = User.objects.create(username=validated_data['username'], email=validated_data['email'])
-        user.set_password(validated_data['password'])
-        user.save()
+        validated_data.pop('password2')
+        user = User.objects.create_user(**validated_data)
+        #user = User.objects.create(username=validated_data['username'], email=validated_data['email'])
+        #user.set_password(validated_data['password'])
+        #user.save()
         return user
 # validatation for login attempt
 class LoginSerializer(serializers.ModelSerializer):

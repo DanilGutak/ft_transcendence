@@ -26,7 +26,7 @@ SECRET_KEY = os.environ.get('LOGIN_SECURITY_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-ALLOWED_HOSTS = ['localhost','login', 'nginx']
+ALLOWED_HOSTS = ['localhost','login', 'nginx', '127.0.0.1']
 
 LOGGING = {
     'version': 1,
@@ -72,7 +72,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+	'social_django',
 ]
 
 SECURE_SSL_REDIRECT = True
@@ -201,4 +201,15 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-DEBUG = False
+DEBUG = True
+
+
+# 42 OAUTH STUFF...
+
+import environ
+
+env = environ.Env()
+
+environ.Env.read_env()
+
+OAUTH_TOKEN_URL = 'https://api.intra.42.fr/oauth/token'

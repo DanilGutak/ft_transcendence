@@ -22,6 +22,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
+function oauthLogin() {
+    fetch('/api/oauth/', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data['oauth_url']) {
+            // Redirect the user to the OAuth provider's authorization URL
+            window.location.href = data['oauth_url'];
+        } else {
+            // Handle any other responses or errors
+            errorContainer.classList.remove('hidden');
+            errorMessage.innerHTML = '<strong>OAuth login failed!</strong>';
+        }
+    })
+    .catch(error => {
+        errorContainer.classList.remove('hidden');
+        errorMessage.innerHTML = '<strong>OAuth login failed! Try again later.</strong>';
+    });
+}
+
+
 async function checkLogin() {
   localStorage.setItem('loggedIn', 'false');
   const accessToken = localStorage.getItem('access-token');
@@ -101,6 +131,7 @@ async function logout() {
   renderPage('login');
   }
 }
+
 function login() { 
   const username = document.getElementById('login-username').value;
   const password = document.getElementById('login-password').value;
@@ -176,3 +207,5 @@ function loginSuccess() {
   document.getElementById('logged-out').classList.add('hidden');
   renderPage('game');
 }
+
+// Handle OAuth2 login

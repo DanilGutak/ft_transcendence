@@ -7,3 +7,5 @@ django-filter
 django-cors-headers
 djangorestframework-simplejwt
 django-two-factor-auth
+social-auth-app-django
+django-environ
