@@ -142,26 +142,26 @@ class TwoFactorAuthViewStatus(APIView):
 
 from oauthlib.oauth2 import WebApplicationClient
 import requests
+from django.urls import reverse
 
-
-client = WebApplicationClient(env(OAUTH_CLIENT_ID))
+client = WebApplicationClient(settings.OAUTH_CLIENT_ID)
 
 class OAuthLoginView(APIView):
     def get(self, request):
-        # Generate the OAuth provider authorization URL
         #1, get redirect uri
-        redirect_uri = request.build_absolute_uri(reverse('OAuthCallbackView'))
+        #redirect_uri = request.build_absolute_uri(reverse('oauth_callback'))
+        redirect_uri = 'https://127.0.0.1:8005/api/oauth/callback/'
 
         #2, build oauth_url
-        oauth_url = f"https://api.intra.42.fr/oauth/authorize?client_id={client_id}&redirect_uri={redirect_uri}&response_type=code"
+        #oauth_url = f"https://api.intra.42.fr/oauth/authorize?client_id={settings.OAUTH_CLIENT_ID}&redirect_uri={redirect_uri}&response_type=code"
 
-        '''
+        
         oauth_url = client.prepare_request_uri(
-            settings.OAUTH_AUTHORIZATION_URL,
+            "https://api.intra.42.fr/oauth/authorize",
             redirect_uri=redirect_uri,
-            scope=["openid", "email", "profile"],
+            scope=["public"],
         )
-        '''
+        
         return JsonResponse({'oauth_url': oauth_url})
 
 class OAuthCallbackView(APIView):
@@ -172,13 +172,14 @@ class OAuthCallbackView(APIView):
             return JsonResponse({'error': 'Authorization code missing'}, status=400)
 
         # Exchange the authorization code for tokens
-        redirect_uri = request.build_absolute_uri(reverse('OAuthCallbackView'))
+        #redirect_uri = request.build_absolute_uri(reverse('oauth_callback'))
+        redirect_uri = 'https://127.0.0.1:8005/api/oauth/callback/'
         token_url = 'https://api.intra.42.fr/oauth/token'
 
         token_data = {
             'grant_type': 'authorization_code',
-            'client_id': env(OAUTH_CLIENT_ID),
-            'client_secret': env(OAUTH_CLIENT_SECRET),
+            'client_id': settings.OAUTH_CLIENT_ID,
+            'client_secret': settings.OAUTH_CLIENT_SECRET,
             'code': code,
             'redirect_uri': redirect_uri,
         }
