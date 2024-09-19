@@ -143,6 +143,7 @@ class TwoFactorAuthViewStatus(APIView):
 from oauthlib.oauth2 import WebApplicationClient
 import requests
 from django.urls import reverse
+from django.contrib.auth.models import User
 
 client = WebApplicationClient(settings.OAUTH_CLIENT_ID)
 
@@ -196,6 +197,7 @@ class OAuthCallbackView(APIView):
 
         user_info = userinfo_response.json()
 
+
 		# Extract user details from the OAuth provider's response
         username = user_info.get('login')  # Username from 42 API
         email = user_info.get('email')  # Email from 42 API
@@ -203,11 +205,10 @@ class OAuthCallbackView(APIView):
         if not email or not username:
             return JsonResponse({'error': 'Incomplete user information'}, status=400)
 
-        # Check if the user already exists in your database
+        # Check if the user already exists
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
-            # If user does not exist, create a new user
             user = User.objects.create_user(username=username, email=email)  
             user.save()
 
@@ -215,103 +216,13 @@ class OAuthCallbackView(APIView):
         refresh = RefreshToken.for_user(user)
         access = refresh.access_token
 
-        return JsonResponse({
+		# Log the user in (this creates a session for the user)
+        login(request, user)
+
+
+        return redirect(f"/oauth/callback/?access={access}&refresh={refresh}")
+
+        '''return JsonResponse({
             'refresh': str(refresh),
             'access': str(access),
-        }, status=200)
-
-
-#OLD...
-
-def oauth_42(request):
-    print('STARTING OAUTH')
-    client_id = env('FORTY_TWO_CLIENT_ID')
-    redirect_uri = request.build_absolute_uri(reverse('oauth_42_callback'))
-    oauth_url = f"https://api.intra.42.fr/oauth/authorize?client_id={client_id}&redirect_uri={redirect_uri}&response_type=code"
-    print(f"Redirecting to: {oauth_url}")
-    return redirect(oauth_url)
-
-def oauth_42_callback(request):
-    print('STARTING OAUTH CALLBACK')
-    code = request.GET.get('code')
-    if not code:
-        return redirect('login')
-
-    token_url = "https://api.intra.42.fr/oauth/token"
-    token_data = {
-        'grant_type': 'authorization_code',
-        'client_id': env('FORTY_TWO_CLIENT_ID'),
-        'client_secret': env('FORTY_TWO_CLIENT_SECRET'),
-        'code': code,
-        'redirect_uri': request.build_absolute_uri(reverse('oauth_42_callback')),
-    }
-    token_response = requests.post(token_url, data=token_data)
-    token_json = token_response.json()
-    access_token = token_json.get('access_token')
-
-    if not access_token:
-        print(f"Error: {token_json}")
-        return redirect('login')
-
-    user_info_url = "https://api.intra.42.fr/v2/me"
-    headers = {'Authorization': f'Bearer {access_token}'}
-    user_info_response = requests.get(user_info_url, headers=headers)
-    user_info = user_info_response.json()
-
-    User = get_user_model()
-    try:
-        user = User.objects.get(email=user_info['email'])
-        if user.is_2fa_enabled:
-            request.session['oauth_user_info'] = user_info
-            return redirect('oauth_2fa_verification')
-        auth_login(request, user)
-        refresh = RefreshToken.for_user(user)
-        print(f"User {user.id} logged in")
-        return render(request, 'jwt_login.html', {'refresh': str(refresh), 'access': str(refresh.access_token)})
-    except User.DoesNotExist:
-        request.session['oauth_user_info'] = user_info
-        print(f"User {user_info['email']} does not exist, redirecting to complete_registration")
-        return redirect('complete_registration')
-
-def complete_registration(request):
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        confirm_password = request.POST.get('confirm_password')
-
-        try:
-            validate_email(email)
-        except ValidationError:
-            return render(request, 'complete_registration.html', {'error': request.t('invalid_email')}, status=400)
-
-        if password != confirm_password:
-            return render(request, 'complete_registration.html', {'error': request.t('passwords_do_not_match')}, status=400)
-        
-        if username:
-            existing_user = get_user_model().objects.filter(username=username).first()
-            if existing_user:
-                return render(request, 'complete_registration.html', {'error': request.t('username_already_exists')}, status=400)
-
-        user_info = request.session.get('oauth_user_info')
-        if not user_info:
-            return redirect('login')
-
-        try:
-            user = get_user_model().objects.create_user(username=username, email=email, password=password)
-            user.save()
-            auth_login(request, user)
-            refresh = RefreshToken.for_user(user)
-            return render(request, 'jwt_login.html', {'refresh': str(refresh), 'access': str(refresh.access_token)})
-        except IntegrityError:
-            return render(request, 'complete_registration.html', {'error': request.t('username_already_exists')})
-        except ValidationError as e:
-            return render(request, 'complete_registration.html', {'error': '{}: {}'.format(request.t('invalid_data'), str(e))})
-        except Exception as e:
-            return render(request, 'complete_registration.html', {'error': '{}: {}'.format(request.t('an_unexpected_error_occurred'), str(e))})
-    else:
-        user_info = request.session.get('oauth_user_info', {})
-        return render(request, 'complete_registration.html', {
-            'username': user_info.get('login', ''),
-            'email': user_info.get('email', '')
-        })
+        }, status=200)'''

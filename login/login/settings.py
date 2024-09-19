@@ -216,3 +216,4 @@ environ.Env.read_env()
 OAUTH_TOKEN_URL = 'https://api.intra.42.fr/oauth/token'
 OAUTH_CLIENT_ID = env('OAUTH_CLIENT_ID')
 OAUTH_CLIENT_SECRET = env('OAUTH_CLIENT_SECRET')
+OAUTH_USERINFO_URL = 'https://api.intra.42.fr/v2/me'

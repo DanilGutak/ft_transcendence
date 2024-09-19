@@ -51,6 +51,35 @@ function oauthLogin() {
     });
 }
 
+// After OAuth redirects back to your app, handle the tokens
+function handleOAuthCallback() {
+    const params = new URLSearchParams(window.location.search);
+    const accessToken = params.get('access');
+    const refreshToken = params.get('refresh');
+    
+    if (accessToken && refreshToken) {
+        // Handle successful login
+        errorContainer.classList.add('hidden'); // Hide error message on successful login
+        
+        successContainer.classList.remove('hidden');
+        localStorage.setItem('loggedIn', 'true');
+        successMessage.innerHTML = '<strong>Logged in successfully via OAuth!</strong>';
+
+        // Store the tokens in localStorage
+        localStorage.setItem('access-token', accessToken);
+        localStorage.setItem('refresh-token', refreshToken);
+
+        // Redirect to homepage after a delay or login success
+        setTimeout(() => {
+            window.location.href = '/'; // Redirect to the homepage
+        }, 2000);
+    } else {
+        // Show error message if tokens are missing
+        errorContainer.classList.remove('hidden');
+        errorMessage.innerHTML = '<strong>OAuth login failed! Missing tokens.</strong>';
+    }
+}
+
 
 async function checkLogin() {
   localStorage.setItem('loggedIn', 'false');
