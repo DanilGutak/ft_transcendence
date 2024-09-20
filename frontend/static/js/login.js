@@ -22,7 +22,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
+let oauthRequestInProgress = false;
+
 function oauthLogin() {
+    if (oauthRequestInProgress) {
+        return;
+    }
+    oauthRequestInProgress = true;
     fetch('/api/oauth/', {
         method: 'GET',
         headers: {
@@ -30,7 +36,11 @@ function oauthLogin() {
         }
     })
     .then(response => {
+        oauthRequestInProgress = false;
         if (!response.ok) {
+            if (response.status === 429) {
+                alert('Too many requests. Please wait a moment.');
+            }
             throw new Error('Network response was not ok');
         }
         return response.json();
@@ -46,6 +56,7 @@ function oauthLogin() {
         }
     })
     .catch(error => {
+        oauthRequestInProgress = false;
         errorContainer.classList.remove('hidden');
         errorMessage.innerHTML = '<strong>OAuth login failed! Try again later.</strong>';
     });

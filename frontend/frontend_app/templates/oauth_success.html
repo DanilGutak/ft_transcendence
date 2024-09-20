@@ -36,13 +36,17 @@
                     window.location.href = '/';
                 } else {
                     alert('OAuth login failed! Missing tokens.');
-                    window.location.href = '/login/';
+                    redirectToHomepage();
+                    //window.location.href = '/';
                 }
             })
             .catch(error => {
                 alert('OAuth login failed! Please try again.');
-                window.location.href = '/';
+                redirectToHomepage();
             });
+        }
+        function redirectToHomepage() {
+            window.location.href = '/';
         }
     </script>
 </head>
