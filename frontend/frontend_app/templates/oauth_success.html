@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OAuth Callback</title>
+    <script>
+        window.onload = function() {
+            handleOAuthCallback();
+        };
+
+        function handleOAuthCallback() {
+            fetch('https://127.0.0.1:8005/api/oauth/get-oauth-tokens/', {  // Login container's endpoint
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch tokens');
+                }
+                return response.json();  // Parse the token data
+            })
+            .then(data => {
+                const accessToken = data['access'];
+                const refreshToken = data['refresh'];
+
+                if (accessToken && refreshToken) {
+                    // Store tokens in localStorage
+                    localStorage.setItem('access-token', accessToken);
+                    localStorage.setItem('refresh-token', refreshToken);
+                    localStorage.setItem('loggedIn', 'true');
+
+                    // Redirect to homepage or dashboard after token storage
+                    window.location.href = '/';
+                } else {
+                    alert('OAuth login failed! Missing tokens.');
+                    window.location.href = '/login/';
+                }
+            })
+            .catch(error => {
+                alert('OAuth login failed! Please try again.');
+                window.location.href = '/';
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>Logging you in...</h1>
+    <p>Please wait while we complete the login process.</p>
+</body>
+</html>

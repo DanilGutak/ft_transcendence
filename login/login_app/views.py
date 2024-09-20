@@ -10,7 +10,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.contrib.auth import get_user_model
 
 from django.utils.crypto import get_random_string
@@ -150,13 +150,9 @@ client = WebApplicationClient(settings.OAUTH_CLIENT_ID)
 class OAuthLoginView(APIView):
     def get(self, request):
         #1, get redirect uri
-        #redirect_uri = request.build_absolute_uri(reverse('oauth_callback'))
         redirect_uri = 'https://127.0.0.1:8005/api/oauth/callback/'
-
         #2, build oauth_url
         #oauth_url = f"https://api.intra.42.fr/oauth/authorize?client_id={settings.OAUTH_CLIENT_ID}&redirect_uri={redirect_uri}&response_type=code"
-
-        
         oauth_url = client.prepare_request_uri(
             "https://api.intra.42.fr/oauth/authorize",
             redirect_uri=redirect_uri,
@@ -167,6 +163,8 @@ class OAuthLoginView(APIView):
 
 class OAuthCallbackView(APIView):
     def get(self, request):
+        print("OAuth callback triggered")
+
         # Extract the authorization code from the callback URL
         code = request.GET.get('code')
         if not code:
@@ -217,12 +215,33 @@ class OAuthCallbackView(APIView):
         access = refresh.access_token
 
 		# Log the user in (this creates a session for the user)
-        login(request, user)
+        #login(request, user)
 
+        #return redirect(f"/oauth/callback/?access={access}&refresh={refresh}")
+         # Store the tokens in the session or return a success flag in the redirect URL
+        request.session['access_token'] = str(access)
+        request.session['refresh_token'] = str(refresh)
 
-        return redirect(f"/oauth/callback/?access={access}&refresh={refresh}")
+        print(f"Generated tokens: access = {str(access)}, refresh = {str(refresh)}")  # Log the tokens
 
+        # Redirect the user back to the frontend
+        return redirect('/oauth-success')  # Redirect to a frontend route after successful login
+    
         '''return JsonResponse({
             'refresh': str(refresh),
             'access': str(access),
         }, status=200)'''
+
+class GetOAuthTokens(APIView):
+    def get(self, request):
+        # Retrieve tokens from the session
+        access_token = request.session.get('access_token')
+        refresh_token = request.session.get('refresh_token')
+
+        if access_token and refresh_token:
+            return JsonResponse({
+                'access': access_token,
+                'refresh': refresh_token,
+            })
+        else:
+            return JsonResponse({'error': 'Tokens not found'}, status=400)
