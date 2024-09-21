@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
   checkLogin();
   const loginForm = document.getElementById('login-button');
   loginForm.addEventListener('click', function(event) {
+    event.preventDefault();
     loginForm.disabled = true;
     login();
     setTimeout(() => {
@@ -11,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   const registerForm = document.getElementById('register-button');
   registerForm.addEventListener('click', function(event) {
+    event.preventDefault();
     document.getElementById('register').classList.remove('hidden');
     document.getElementById('login').classList.add('hidden');
   });
@@ -75,7 +77,9 @@ async function checkLogin() {
       }
     });
     if (response.ok) {
+      //const data = await response.json();  
       localStorage.setItem('loggedIn', 'true');
+      //localStorege.setItem('username', data.username);
       document.getElementById('logged-in').classList.remove('hidden');
       document.getElementById('logged-out').classList.add('hidden');
     }
@@ -203,6 +207,7 @@ function login() {
 .catch(error => {
     errorContainer.classList.remove('hidden');
     errorMessage.classList.remove('hidden');
+    loginForm.disabled = false;
     setTimeout(() => {
       errorMessage.innerHTML = '<strong>Login failed! Try again later</strong>';
     }, 2000);
