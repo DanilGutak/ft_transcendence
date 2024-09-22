@@ -1,32 +1,3 @@
 <div id="home" class="page {% if not home %}hidden{% endif %}">
     <h1 id="welcome-message">Welcome to the internet :)</h1>
 </div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Assuming JWT tokens are stored in cookies
-        const accessToken = document.cookie.split('; ').find(row => row.startsWith('access_token='));
-    
-        if (accessToken) {
-            // If the token exists, make a request to get the user info (if needed)
-            fetch('/api/loggedin/', {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${accessToken.split('=')[1]}`
-                },
-                credentials: 'include'
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.username) {
-                    // Dynamically update the welcome message for logged-in users
-                    document.getElementById('welcome-message').innerHTML = `Welcome, ${data.username}!`;
-                    document.getElementById('user-message').innerHTML = `We are happy to see you back :)`;
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching user info:', error);
-            });
-        }
-    });
-    </script>
