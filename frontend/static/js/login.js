@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-  checkLogin();
   const loginForm = document.getElementById('login-button');
+  checkLogin();
   loginForm.addEventListener('click', function(event) {
     event.preventDefault();
     loginForm.disabled = true;
@@ -207,11 +207,15 @@ function login() {
 .catch(error => {
     errorContainer.classList.remove('hidden');
     errorMessage.classList.remove('hidden');
-    loginForm.disabled = false;
+    //loginForm.disabled = false;
     setTimeout(() => {
       errorMessage.innerHTML = '<strong>Login failed! Try again later</strong>';
     }, 2000);
     // Show error message on failed login
+    setTimeout(() => {
+        errorMessage.classList.add('hidden');
+        errorContainer.classList.add('hidden');
+    }, 4000); //wait 4 secs then hide it
 });
 }
 // press on the "Login" button in the login form

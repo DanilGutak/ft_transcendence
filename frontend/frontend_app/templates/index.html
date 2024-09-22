@@ -40,15 +40,19 @@
                             </div>
                             <div id="logged-in" class="hidden">
                                 <div class="navbar-nav hidden" id="logged_in">
-                                    <a class="hidden nav-item nav-link" href="/home" data-path="home">Home</a>
-                                    <a class="nav-item nav-link" href="/game" data-path="game">Game</a>
-                                    <a class="nav-item nav-link" href="/gameFor4" data-path="gameFor4">Game for 4</a>
-                                    <a class="nav-item nav-link" href="/tournament" data-path="tournament">Tournament</a>
-                                    <div id="2fa-container" class="form-check form-switch">
-                                        <input type="checkbox" id="2fa-tickbox" name="2fa-tickbox" class="form-check-input">
-                                        <label for="2fa-tickbox">2FA Enabled</label>
+                                    <div class="left-side">
+                                        <a class="hidden nav-item nav-link" href="/home" data-path="home">Home</a>
+                                        <a class="nav-item nav-link" href="/game" data-path="game">Game</a>
+                                        <a class="nav-item nav-link" href="/gameFor4" data-path="gameFor4">Game for 4</a>
+                                        <a class="nav-item nav-link" href="/tournament" data-path="tournament">Tournament</a>
                                     </div>
-                                    <button id="logout-button" class="btn btn-primary">Logout</button>
+                                    <div class="right-side">
+                                        <div id="2fa-container" class="form-check form-switch">
+                                            <input type="checkbox" id="2fa-tickbox" name="2fa-tickbox" class="form-check-input">
+                                            <label for="2fa-tickbox">2FA Enabled</label>
+                                        </div>
+                                        <button id="logout-button" class="btn btn-primary">Logout</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>

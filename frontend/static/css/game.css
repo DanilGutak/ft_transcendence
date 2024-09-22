@@ -10,10 +10,9 @@ canvas {
     column-gap: 20px;
 }
 
-.form-check.form-switch {
-    display: flex;
-    align-items: center; /* Aligns items vertically in the center */
-    justify-content: center; /* Aligns items horizontally in the center */
+
+.navbar-collapse #logged-in {
+    width: -webkit-fill-available;
 }
 
 .navbar-collapse button {
@@ -22,6 +21,31 @@ canvas {
 
 .page {
     padding-top: 20px;
+}
+
+@media (min-width: 993px) {
+    .navbar-nav {
+        display: flex;
+        justify-content: space-between;
+    }
+    
+    .navbar-nav .left-side {
+        display: flex;
+    }
+    
+    .navbar-nav .right-side {
+        display: flex;
+    }
+
+    .form-check.form-switch {
+        display: flex;
+        align-items: center; /* Aligns items vertically in the center */
+        justify-content: center; /* Aligns items horizontally in the center */
+    }
+
+    .navbar-nav div label {
+        margin-left: 4px;
+    }
 }
 
 @media (max-width: 992px) {
@@ -37,10 +61,5 @@ canvas {
         max-width: 10rem;
         margin: initial;
         margin-top: 10px;
-    }
-    .form-check.form-switch {
-        display: initial;
-        align-items: initial; /* Aligns items vertically in the center */
-        justify-content: initial; /* Aligns items horizontally in the center */
     }
 }
