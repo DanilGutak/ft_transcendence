@@ -35,4 +35,10 @@ urlpatterns = [
 
 
 
+	# OAuth
+    path('api/oauth/', OAuthLoginView.as_view(), name='oauth_login'),
+    path('api/oauth/callback/', OAuthCallbackView.as_view(), name='oauth_callback'),
+    path('api/oauth/get-oauth-tokens/', GetOAuthTokens.as_view(), name='get_oauth_tokens'),
+    #path("api/oauth/2fa_verification/", oauth_2fa_verification, name="oauth_2fa_verification"),
+    #path("oauth/complete/", complete_registration, name="complete_registration"),
 ]

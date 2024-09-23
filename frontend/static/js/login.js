@@ -1,7 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
-  checkLogin();
   const loginForm = document.getElementById('login-button');
+  checkLogin();
   loginForm.addEventListener('click', function(event) {
+    event.preventDefault();
     loginForm.disabled = true;
     login();
     setTimeout(() => {
@@ -11,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   const registerForm = document.getElementById('register-button');
   registerForm.addEventListener('click', function(event) {
+    event.preventDefault();
     document.getElementById('register').classList.remove('hidden');
     document.getElementById('login').classList.add('hidden');
   });
@@ -21,6 +23,46 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
 });
+
+let oauthRequestInProgress = false;
+
+function oauthLogin() {
+    if (oauthRequestInProgress) {
+        return;
+    }
+    oauthRequestInProgress = true;
+    fetch('/api/oauth/', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => {
+        oauthRequestInProgress = false;
+        if (!response.ok) {
+            if (response.status === 429) {
+                alert('Too many requests. Please wait a moment.');
+            }
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data['oauth_url']) {
+            // Redirect the user to the OAuth provider's authorization URL
+            window.location.href = data['oauth_url'];
+        } else {
+            // Handle any other responses or errors
+            errorContainer.classList.remove('hidden');
+            errorMessage.innerHTML = '<strong>OAuth login failed!</strong>';
+        }
+    })
+    .catch(error => {
+        oauthRequestInProgress = false;
+        errorContainer.classList.remove('hidden');
+        errorMessage.innerHTML = '<strong>OAuth login failed! Try again later.</strong>';
+    });
+}
 
 async function checkLogin() {
   localStorage.setItem('loggedIn', 'false');
@@ -35,7 +77,9 @@ async function checkLogin() {
       }
     });
     if (response.ok) {
+      //const data = await response.json();  
       localStorage.setItem('loggedIn', 'true');
+      //localStorege.setItem('username', data.username);
       document.getElementById('logged-in').classList.remove('hidden');
       document.getElementById('logged-out').classList.add('hidden');
     }
@@ -101,6 +145,7 @@ async function logout() {
   renderPage('login');
   }
 }
+
 function login() { 
   const username = document.getElementById('login-username').value;
   const password = document.getElementById('login-password').value;
@@ -162,10 +207,15 @@ function login() {
 .catch(error => {
     errorContainer.classList.remove('hidden');
     errorMessage.classList.remove('hidden');
+    //loginForm.disabled = false;
     setTimeout(() => {
       errorMessage.innerHTML = '<strong>Login failed! Try again later</strong>';
     }, 2000);
     // Show error message on failed login
+    setTimeout(() => {
+        errorMessage.classList.add('hidden');
+        errorContainer.classList.add('hidden');
+    }, 4000); //wait 4 secs then hide it
 });
 }
 // press on the "Login" button in the login form
@@ -176,3 +226,5 @@ function loginSuccess() {
   document.getElementById('logged-out').classList.add('hidden');
   renderPage('game');
 }
+
+// Handle OAuth2 login

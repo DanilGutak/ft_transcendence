@@ -26,7 +26,7 @@ SECRET_KEY = os.environ.get('LOGIN_SECURITY_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-ALLOWED_HOSTS = ['localhost','login', 'nginx']
+ALLOWED_HOSTS = ['localhost','login', 'nginx', '127.0.0.1']
 
 LOGGING = {
     'version': 1,
@@ -72,7 +72,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+	'social_django',
 ]
 
 SECURE_SSL_REDIRECT = True
@@ -137,7 +137,7 @@ REST_FRAMEWORK = {
         'rest_framework.throttling.UserRateThrottle'
     ],
     'DEFAULT_THROTTLE_RATES': {
-        'anon': '5/minute',  # Limits anonymous user requests to 5 per minute
+        'anon': '500/minute',  # Limits anonymous user requests to 5 per minute
         'user': '10/second'  # Limits authenticated user requests to 10 per second
     }
 }
@@ -202,3 +202,18 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 DEBUG = False
+
+
+# 42 OAUTH STUFF...
+
+import environ
+
+env = environ.Env()
+
+environ.Env.read_env()
+
+# OAuth settings
+OAUTH_TOKEN_URL = 'https://api.intra.42.fr/oauth/token'
+OAUTH_CLIENT_ID = env('OAUTH_CLIENT_ID')
+OAUTH_CLIENT_SECRET = env('OAUTH_CLIENT_SECRET')
+OAUTH_USERINFO_URL = 'https://api.intra.42.fr/v2/me'

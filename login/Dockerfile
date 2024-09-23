@@ -9,6 +9,7 @@ RUN apt-get update \
         gcc \
         gettext \
         postgresql-client \
+		netcat-openbsd \
     && rm -rf /var/lib/apt/lists/*
 COPY requirements.txt /requirements.txt
 COPY entrypoint.sh /entrypoint.sh

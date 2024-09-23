@@ -45,7 +45,7 @@ services:
   #   depends_on:
   #     - elasticsearch
   frontend:
-    image: frontend
+    #image: frontend
     container_name: frontend
     build: 
       context: ./frontend
@@ -57,6 +57,16 @@ services:
       - ./static_volume:/code/staticfiles
     env_file:
       - .env
+    depends_on:
+      frontend_db:
+        condition: service_healthy
+    #healthcheck:
+    #  test: ["CMD-SHELL", "pg_isready -U postgres"]
+    #  interval: 10s
+    #  timeout: 5s
+    #  retries: 5
+
+
   nginx:
     image: nginx:1.19
     container_name: nginx
@@ -70,6 +80,7 @@ services:
     depends_on:
       - login
       - frontend
+
   login_db:
     image: postgres:12
     container_name: login_db
@@ -87,6 +98,7 @@ services:
     volumes:
       - ./postgres:/var/lib/postgresql/data
       - ./pg_hba.conf:/etc/postgresql/pg_hba.conf
+    
   frontend_db:
     image: postgres:12
     command: ["postgres", "-c", "hba_file=/etc/postgresql/pg_hba.conf"]
@@ -103,6 +115,7 @@ services:
       start_period: 2s
     volumes:
       - ./pg_hba.conf:/etc/postgresql/pg_hba.conf
+    
   tournament_db:
     image: postgres:12
     command: ["postgres", "-c", "hba_file=/etc/postgresql/pg_hba.conf"]
@@ -119,8 +132,9 @@ services:
       start_period: 2s
     volumes:
       - ./pg_hba.conf:/etc/postgresql/pg_hba.conf
+    
   login:
-    image: login
+    #image: login
     container_name: login
     build: 
       context: ./login
@@ -135,8 +149,9 @@ services:
     depends_on:
       login_db:
         condition: service_healthy
+    
   tournament:
-    image: tournament
+    # image: tournament
     container_name: tournament
     build: 
       context: ./tournament
@@ -149,11 +164,9 @@ services:
     env_file:
       - .env
     depends_on:
-      - nginx
-      - tournament_db 
-      
+      tournament_db:
+        condition: service_healthy
 
-  
 networks:
   default:
       driver: bridge

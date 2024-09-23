@@ -1,7 +1,7 @@
 # login_app/views.py
 
 from django.contrib.auth import authenticate, login, logout
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 from django.middleware.csrf import get_token
 from rest_framework.views import APIView
@@ -9,6 +9,9 @@ from .serializers import RegisterSerializer , LoginSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
+
+from django.shortcuts import redirect, render
+from django.contrib.auth import get_user_model
 
 from django.utils.crypto import get_random_string
 from django.utils import timezone
@@ -41,8 +44,9 @@ class LoginView(APIView):
             else:
                 return JsonResponse({'error': 'Invalid credentials'}, status=400)
         return JsonResponse(serializer.errors, status=400)
-    
-# 
+
+
+#
 class SendTwoFactorAuthView(APIView):
     def post(self, request):
         data = json.loads(request.body)
@@ -131,3 +135,107 @@ class TwoFactorAuthViewStatus(APIView):
     def get(self, request):
         two_factor_auth = TwoFactorAuth.objects.get(user=request.user)
         return JsonResponse({'two_factor_enabled': two_factor_auth.two_factor_enabled}, status=200)
+
+
+
+# OAuth functions below...
+
+from oauthlib.oauth2 import WebApplicationClient
+import requests
+from django.urls import reverse
+from django.contrib.auth.models import User
+
+client = WebApplicationClient(settings.OAUTH_CLIENT_ID)
+
+class OAuthLoginView(APIView):
+    def get(self, request):
+        #1, get redirect uri
+        redirect_uri = 'https://127.0.0.1:8005/api/oauth/callback/'
+        #2, build oauth_url
+        #oauth_url = f"https://api.intra.42.fr/oauth/authorize?client_id={settings.OAUTH_CLIENT_ID}&redirect_uri={redirect_uri}&response_type=code"
+        oauth_url = client.prepare_request_uri(
+            "https://api.intra.42.fr/oauth/authorize",
+            redirect_uri=redirect_uri,
+            scope=["public"],
+        )
+        
+        return JsonResponse({'oauth_url': oauth_url})
+
+class OAuthCallbackView(APIView):
+    def get(self, request):
+        print("OAuth callback triggered")
+
+        # Extract the authorization code from the callback URL
+        code = request.GET.get('code')
+        if not code:
+            return redirect('/oauth-redirect')  # Redirect to a frontend route if the code is missing
+        # Exchange the authorization code for tokens
+        #redirect_uri = request.build_absolute_uri(reverse('oauth_callback'))
+        redirect_uri = 'https://127.0.0.1:8005/api/oauth/callback/'
+        token_url = 'https://api.intra.42.fr/oauth/token'
+
+        token_data = {
+            'grant_type': 'authorization_code',
+            'client_id': settings.OAUTH_CLIENT_ID,
+            'client_secret': settings.OAUTH_CLIENT_SECRET,
+            'code': code,
+            'redirect_uri': redirect_uri,
+        }
+
+        token_response = requests.post(token_url, data=token_data)
+    
+        # Parse the tokens
+        client.parse_request_body_response(token_response.text)
+
+        # Get user info
+        userinfo_endpoint = settings.OAUTH_USERINFO_URL
+        uri, headers, body = client.add_token(userinfo_endpoint)
+        userinfo_response = requests.get(uri, headers=headers, data=body)
+
+        user_info = userinfo_response.json()
+
+
+		# Extract user details from the OAuth provider's response
+        username = user_info.get('login')  # Username from 42 API
+        email = user_info.get('email')  # Email from 42 API
+
+        if not email or not username:
+            return redirect('/oauth-redirect')
+            #return JsonResponse({'error': 'Incomplete user information'}, status=400)
+
+        # Check if the user already exists
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            user = User.objects.create_user(username=username, email=email)  
+            user.save()
+
+        # Generate access and refresh tokens for the user
+        refresh = RefreshToken.for_user(user)
+        access = refresh.access_token
+
+        # Store the tokens in the session or return a success flag in the redirect URL
+        request.session['access_token'] = str(access)
+        request.session['refresh_token'] = str(refresh)
+
+        # Redirect the user back to the frontend
+        return redirect('/oauth-redirect')  # Redirect to a frontend route after successful login
+    
+        '''return JsonResponse({
+            'refresh': str(refresh),
+            'access': str(access),
+        }, status=200)'''
+
+class GetOAuthTokens(APIView):
+    def get(self, request):
+        # Retrieve tokens from the session
+        access_token = request.session.get('access_token')
+        refresh_token = request.session.get('refresh_token')
+
+        if access_token and refresh_token:
+            return JsonResponse({
+                'access': access_token,
+                'refresh': refresh_token,
+            })
+        else:
+            return JsonResponse({'error': 'Tokens not found'}, status=400)

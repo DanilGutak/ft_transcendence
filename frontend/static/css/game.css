@@ -3,3 +3,67 @@ canvas {
     margin: auto;
     background: #000000;
 }
+
+.hidden {
+    display: none;
+}
+
+.button-container {
+    display: flex;
+    margin-top: 20px;
+    column-gap: 20px;
+}
+
+
+.navbar-collapse #logged-in {
+    width: -webkit-fill-available;
+}
+
+.navbar-collapse button {
+    margin: 0 10px;
+}
+
+.page {
+    padding-top: 20px;
+}
+
+@media (min-width: 993px) {
+    .navbar-nav {
+        display: flex;
+        justify-content: space-between;
+    }
+    
+    .navbar-nav .left-side {
+        display: flex;
+    }
+    
+    .navbar-nav .right-side {
+        display: flex;
+    }
+
+    .form-check.form-switch {
+        display: flex;
+        align-items: center; /* Aligns items vertically in the center */
+        justify-content: center; /* Aligns items horizontally in the center */
+    }
+
+    .navbar-nav div label {
+        margin-left: 4px;
+    }
+}
+
+@media (max-width: 992px) {
+    .button-container {
+        flex-direction: column;
+    }
+
+    .button-container button {
+        margin: 10px 0;
+    }
+
+    #logout-button {
+        max-width: 10rem;
+        margin: initial;
+        margin-top: 10px;
+    }
+}

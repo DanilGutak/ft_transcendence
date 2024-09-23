@@ -7,7 +7,7 @@
                 <div id="success-container-register"  class="hidden"  > 
                     <div id="success-message-register" class="alert alert-success"><strong>Register successful!</strong></div></div>
                 <div id="error-container-register" class="hidden">
-                <div id="error-message-register" class="alert alert-danger"><strong>Register failed:</strong></div>
+                	<div id="error-message" class="alert alert-danger"></div>
                 </div>
                 <form id="register-form">
                     <div class="form-group">
@@ -28,17 +28,17 @@
                             id="register-password"
                             >
                     </div>
-                    <div class="form-group pb-2">
+                    <div class="form-group">
                         <label for="register-password2">Password again</label>
                         <input type="password" class="form-control"
                             id="register-password2"
                             >
                     </div>
                     </form>
-                    <button id="register-submit-button" type="button"
-                        class="btn btn-primary">Submit</button>
-                    <button id="register-login-button" type="button"
-                        class="btn btn-secondary">Back to login</button>
+                    <div class="button-container">
+                        <button id="register-submit-button" type="button" class="btn btn-primary">Submit</button>
+                        <button id="register-login-button" type="button" class="btn btn-secondary">Back to login</button>
+                    </div>
                 </div>
             </div>
         </div>
