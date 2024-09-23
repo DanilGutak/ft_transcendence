@@ -1,7 +1,6 @@
 window.onload = function() {
     // Check if the current URL contains the name of your HTML file
     if (window.location.pathname === '/oauth-redirect/') {
-        console.log('OAuth callback page');
         handleOAuthCallback();
     }
 };
@@ -38,9 +37,12 @@ function handleOAuthCallback() {
     })
     .catch(error => {
         alert('OAuth login failed! Please try again.');
+        console.log('OAuth callback page');
         redirectToHomepage();
     });
 }
 function redirectToHomepage() {
-    window.location.href = '/';
+    setTimeout(() => {
+        window.location.href = '/';
+    }, 1000);
 }
