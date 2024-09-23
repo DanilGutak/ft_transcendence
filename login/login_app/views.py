@@ -168,8 +168,7 @@ class OAuthCallbackView(APIView):
         # Extract the authorization code from the callback URL
         code = request.GET.get('code')
         if not code:
-            return JsonResponse({'error': 'Authorization code missing'}, status=400)
-
+            return redirect('/oauth-redirect')  # Redirect to a frontend route if the code is missing
         # Exchange the authorization code for tokens
         #redirect_uri = request.build_absolute_uri(reverse('oauth_callback'))
         redirect_uri = 'https://127.0.0.1:8005/api/oauth/callback/'
@@ -201,7 +200,8 @@ class OAuthCallbackView(APIView):
         email = user_info.get('email')  # Email from 42 API
 
         if not email or not username:
-            return JsonResponse({'error': 'Incomplete user information'}, status=400)
+            return redirect('/oauth-redirect')
+            #return JsonResponse({'error': 'Incomplete user information'}, status=400)
 
         # Check if the user already exists
         try:
@@ -214,18 +214,12 @@ class OAuthCallbackView(APIView):
         refresh = RefreshToken.for_user(user)
         access = refresh.access_token
 
-		# Log the user in (this creates a session for the user)
-        #login(request, user)
-
-        #return redirect(f"/oauth/callback/?access={access}&refresh={refresh}")
-         # Store the tokens in the session or return a success flag in the redirect URL
+        # Store the tokens in the session or return a success flag in the redirect URL
         request.session['access_token'] = str(access)
         request.session['refresh_token'] = str(refresh)
 
-        print(f"Generated tokens: access = {str(access)}, refresh = {str(refresh)}")  # Log the tokens
-
         # Redirect the user back to the frontend
-        return redirect('/oauth-success')  # Redirect to a frontend route after successful login
+        return redirect('/oauth-redirect')  # Redirect to a frontend route after successful login
     
         '''return JsonResponse({
             'refresh': str(refresh),

@@ -14,6 +14,6 @@ def redirect_to_home(request):
 
 from django.views.generic import TemplateView
 
-class OAuthSuccessView(TemplateView):
-    template_name = 'oauth_success.html'  # The HTML file where the JavaScript will be loaded
+class OAuthStatusView(TemplateView):
+    template_name = 'oauth_redirect.html'  # The HTML file where the JavaScript will be loaded
 

@@ -20,6 +20,6 @@ from frontend_app.views import *
 urlpatterns = [
     path('', render_page, {'page_name': 'home'}, name='Index'),
     # re_path(r'^.*$', redirect_to_home), 
-    path('oauth-success/', OAuthSuccessView.as_view(), name='oauth_success'),  # Add this route
+    path('oauth-redirect/', OAuthStatusView.as_view(), name='oauth_redirect'),  # Add this route
 
 ]
