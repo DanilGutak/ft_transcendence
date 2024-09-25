@@ -40,7 +40,6 @@ function register() {
     })
     .then(response => {
         if (!response.ok) {
-			console.log(response);
             return response.json().then(err => {
                 throw err;
             });

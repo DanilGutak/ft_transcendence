@@ -1,7 +1,6 @@
 window.onload = function() {
     // Check if the current URL contains the name of your HTML file
     if (window.location.pathname === '/oauth-redirect/') {
-        console.log('OAuth callback page');
         handleOAuthCallback();
     }
 };

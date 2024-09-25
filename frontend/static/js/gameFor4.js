@@ -127,7 +127,6 @@ function handlePaddleCollision(ball, paddle, paddleSide) {
     const maxBounceAngle = Math.PI / 4; // 45 degrees
     const bounceAngle = normalizedDistance * maxBounceAngle;
     const speed = Math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy);
-    console.log(bounceAngle);
     switch (paddleSide) {
         case 'right':
             ball.dx = -speed * Math.cos(bounceAngle);
@@ -155,22 +154,18 @@ function moveBall() {
     // Collision with player1 (bottom)
     if (ball.y + ball.radius > player1.y && ball.x > player1.x && ball.x < player1.x + paddleWidth) {
         handlePaddleCollision(ball, player1, 'bottom');
-        console.log(`bottom: x ${ball.x} y ${ball.y}`);
     }
     // Collision with player2 (top)
     else if (ball.y - ball.radius < player2.y + paddleHeight && ball.x > player2.x && ball.x < player2.x + paddleWidth) {
         handlePaddleCollision(ball, player2, 'top');
-        console.log(`top: x ${ball.x} y ${ball.y}`);
     }
     // Collision with player3 (left)
     else if (ball.x - ball.radius < player3.x + paddleHeight && ball.y > player3.y && ball.y < player3.y + paddleWidth) {
         handlePaddleCollision(ball, player3, 'left');
-        console.log(`left: x ${ball.x} y ${ball.y}`);
     }
     // Collision with player4 (right)
     else if (ball.x + ball.radius > player4.x && ball.y > player4.y && ball.y < player4.y + paddleWidth) {
         handlePaddleCollision(ball, player4, 'right');
-        console.log(`right: x ${ball.x} y ${ball.y}`);
     }
     // Ball out of bounds
     else if (ball.y + ball.radius > canvas.height) {
