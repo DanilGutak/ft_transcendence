@@ -91,26 +91,30 @@ async function checkLogin() {
           headers: {
             'Content-Type': 'application/json',
             'authorization': `Bearer ${localStorage.getItem('access-token')}`
-      }})
+        }})
 
         if (response.ok) {
           localStorage.setItem('loggedIn', 'true');
           document.getElementById('logged-in').classList.remove('hidden');
           document.getElementById('logged-out').classList.add('hidden');
+        }
+        else {
+          document.getElementById('logged-in').classList.add('hidden');
+          document.getElementById('logged-out').classList.remove('hidden');
+          localStorage.removeItem('access-token');
+          localStorage.removeItem('refresh-token');
+        }
+
+
       }
+
+
       else {
         document.getElementById('logged-in').classList.add('hidden');
         document.getElementById('logged-out').classList.remove('hidden');
-        localStorage.removeItem('access-token');
-        localStorage.removeItem('refresh-token');
-      }
-    }
-      else {
-      document.getElementById('logged-in').classList.add('hidden');
-      document.getElementById('logged-out').classList.remove('hidden');
       }
     
-  }
+    }
   }
 }
 
@@ -120,6 +124,7 @@ async function logout() {
   const data = {
     refresh: refreshToken2
   };
+  
   let response = await fetch('/api/logout/', {
     method: 'POST',
     headers: {
@@ -128,21 +133,67 @@ async function logout() {
     },
     body: JSON.stringify(data),
   })
+
+  // If unauthorized, attempt to refresh the token and retry logout
+
+  //case of unauthorized
   if (response.status === 401) {
+    
+    console.log("retrying logout");
     await refreshToken();
-    logout();
+    //retry logout
+    //print random message
+    response = await fetch('/api/logout/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('access-token')}` // Use new access token
+      },
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      // If token refresh fails, force logout
+      handleFailure("Session expired. Please log in again.");
+      localStorage.setItem('loggedIn', 'false');
+      localStorage.removeItem('access-token');
+      localStorage.removeItem('refresh-token');
+      document.getElementById('logged-in').classList.add('hidden');
+      document.getElementById('logged-out').classList.remove('hidden');
+      renderPage('login');
+      return;
+    } else {
+      // If token refresh succeeds, retry logout
+      handleSuccess("Logged out successfully");
+      localStorage.setItem('loggedIn', 'false');
+      localStorage.removeItem('access-token');
+      localStorage.removeItem('refresh-token');
+      document.getElementById('logged-in').classList.add('hidden');
+      document.getElementById('logged-out').classList.remove('hidden');
+      renderPage('login');
+    }
+
+
+    //logout();
   }
+  //case for other errors except success
   else if (!response.ok) {
     handleFailure("Failed to logout");
+    localStorage.setItem('loggedIn', 'false');
+    localStorage.removeItem('access-token');
+    localStorage.removeItem('refresh-token');
+    document.getElementById('logged-in').classList.add('hidden');
+    document.getElementById('logged-out').classList.remove('hidden');
+    renderPage('login');
   }
+  //case for success
   else {
-  localStorage.setItem('loggedIn', 'false');
-  handleSuccess("Logged out successfully");
-  localStorage.removeItem('access-token');
-  localStorage.removeItem('refresh-token');
-  document.getElementById('logged-in').classList.add('hidden');
-  document.getElementById('logged-out').classList.remove('hidden');
-  renderPage('login');
+    handleSuccess("Logged out successfully");
+    localStorage.setItem('loggedIn', 'false');
+    localStorage.removeItem('access-token');
+    localStorage.removeItem('refresh-token');
+    document.getElementById('logged-in').classList.add('hidden');
+    document.getElementById('logged-out').classList.remove('hidden');
+    renderPage('login');
   }
 }
 

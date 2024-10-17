@@ -28,11 +28,10 @@ function handleOAuthCallback() {
             localStorage.setItem('loggedIn', 'true');
 
             // Redirect to homepage or dashboard after token storage
-            window.location.href = '/';
+            redirectToHomepage();
         } else {
             alert('OAuth login failed! Missing tokens.');
             redirectToHomepage();
-            //window.location.href = '/';
         }
     })
     .catch(error => {
@@ -44,5 +43,5 @@ function handleOAuthCallback() {
 function redirectToHomepage() {
     setTimeout(() => {
         window.location.href = '/';
-    }, 1000);
+    }, 2000);
 }
