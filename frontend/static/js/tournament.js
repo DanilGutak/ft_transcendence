@@ -190,17 +190,27 @@ function tournament() {
   }
 
   function endTournament() {
-      gameState = 0;
-      context.clearRect(0, 0, canvas.width, canvas.height);
-      context.font = '30px Arial';
-      context.fillStyle = '#FFF';
-      context.fillText('Tournament Results', canvas.width / 2 - 120, 50);
-      for (let i = 0; i < 4; i++) {
-          context.fillStyle = tournamentResults[i].color;
-          context.fillText(`${i+1}${getOrdinal(i+1)} Place: ${tournamentResults[i].name}`, canvas.width / 2 - 100, 100 + i * 50);
-      }
-      sendTournamentResults(tournamentResults);
-  }
+    gameState = 0;
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.font = '30px Arial';
+    context.fillStyle = '#FFF';
+    context.fillText('Tournament Results', canvas.width / 2 - 120, 50);
+    for (let i = 0; i < 4; i++) {
+        context.fillStyle = tournamentResults[i].color;
+        context.fillText(`${i+1}${getOrdinal(i+1)} Place: ${tournamentResults[i].name}`, canvas.width / 2 - 100, 100 + i * 50);
+    }
+    sendTournamentResults(tournamentResults);
+
+    document.getElementById('return-button').style.display = 'block';
+}
+
+document.getElementById('return-button').addEventListener('click', function() {
+    document.getElementById('tournament-canvas').style.display = 'none';
+    document.getElementById('player-names-form').style.display = 'block';
+    document.getElementById('return-button').style.display = 'none';  // Hide return button after clicking
+});
+
+
 
   function getOrdinal(n) {
       const s = ["th", "st", "nd", "rd"];
@@ -296,3 +306,4 @@ function tournament() {
 }}
 
 document.getElementById('tournament-canvas').style.display = 'none';
+document.getElementById('return-button').style.display = 'none';
