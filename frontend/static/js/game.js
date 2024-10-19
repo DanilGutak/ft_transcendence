@@ -142,6 +142,8 @@ function game() {
         {
             context.font = '50px Arial';
             context.fillText('Game Over', canvas.width / 2 - 150, canvas.height / 2 - 100);
+            const gameButton = document.getElementById('game-button');
+            gameButton.textContent = 'Restart Game';
         }
         
     
