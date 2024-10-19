@@ -4,12 +4,18 @@
         <br>
         <div class="row">
             <div class="col-md-6 mx-auto">
-                <button id="game-button" type="button"
-                    class="btn btn-primary ">Start Game</button>
+                <button id="game-button" type="button" class="btn btn-primary">Start Game</button>
             </div>
         </div>
     </div>
     <br>
-    <canvas id="game-canvas" width="750" height="600" > 
-    </canvas>
+    <div id="game-rules" class="text-center">
+        <h3>Welcome to the Game!</h3>
+        <p><strong>Controls:</strong></p>
+        <p>Player 1: W (up), S (down)</p>
+        <p>Player 2: Arrow Up (up), Arrow Down (down)</p>
+        <p>First player to score 5 points wins!</p>
+        <p>Press the "Start Game" button to begin.</p>
+    </div>
+    <canvas id="game-canvas" width="750" height="600" style="display: none;"></canvas>
 </div>

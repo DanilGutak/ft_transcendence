@@ -166,6 +166,8 @@ function game() {
     const gameForm = document.getElementById('game-button');
     gameForm.addEventListener('click', function(event) {
         if (gameState === 0) {
+            canvas.style.display = "block";
+            document.getElementById('game-rules').style.display = 'none';
             startGame();
         }
       });

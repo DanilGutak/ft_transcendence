@@ -232,6 +232,8 @@ document.addEventListener('keydown', event => {
 document.addEventListener('keyup', event => {
     keyStateFor4[event.key] = false;
     if (event.key === 'Enter') {
+        canvas.style.display = "block";
+        document.getElementById('gameFor4-rules').style.display = 'none';
         startGame();
     }
 });
@@ -239,6 +241,8 @@ document.addEventListener('keyup', event => {
 const gameForm = document.getElementById('gameFor4-button');
 gameForm.addEventListener('click', function(event) {
     if (gameStateFor4 === 0) {
+        canvas.style.display = "block";
+        document.getElementById('gameFor4-rules').style.display = 'none';
         startGame();
     }
 });
