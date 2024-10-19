@@ -266,7 +266,7 @@ function login() {
     setTimeout(() => {
         errorMessage.classList.add('hidden');
         errorContainer.classList.add('hidden');
-    }, 4000); //wait 4 secs then hide it
+    }, 2000); //wait 4 secs then hide it
 });
 }
 // press on the "Login" button in the login form
