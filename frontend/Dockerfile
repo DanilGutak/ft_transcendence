@@ -18,6 +18,5 @@ RUN pip install --upgrade pip \
 
 # wait for postgres
 
-EXPOSE 8007
 
 CMD ["bash", "entrypoint.sh"]

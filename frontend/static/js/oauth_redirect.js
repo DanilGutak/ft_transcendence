@@ -39,7 +39,6 @@ function handleOAuthCallback() {
     })
     .catch(error => {
         alert('OAuth login failed! Please try again.');
-        console.log('OAuth callback page');
         redirectToHomepage();
     });
 }

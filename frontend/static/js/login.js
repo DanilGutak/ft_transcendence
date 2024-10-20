@@ -138,9 +138,7 @@ async function logout() {
 
   //case of unauthorized
   if (response.status === 401) {
-    
-    console.log("retrying logout");
-    await refreshToken();
+        await refreshToken();
     //retry logout
     //print random message
     response = await fetch('/api/logout/', {

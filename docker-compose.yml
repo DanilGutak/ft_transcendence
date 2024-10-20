@@ -36,7 +36,6 @@ services:
     container_name: logstash
     volumes:
       - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
-      - ./nginx_logs:/var/log/nginx
       - ./backend_logs:/var/log/backend
       - ./certs:/usr/share/logstash/config/certs
       - ./logstash.yml:/usr/share/logstash/config/logstash.yml
