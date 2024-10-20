@@ -1,5 +1,3 @@
-game()
-
 function game() {
     const canvas = document.getElementById('game-canvas');
     const context = canvas.getContext('2d');
@@ -195,9 +193,27 @@ function game() {
         if (gameState === 1) {
             return;
         }
+        
+        let countdown = 3; // Start countdown from 3
+
+        function displayCountdown() {
+            context.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
+            context.font = '50px Arial';
+            context.fillStyle = '#FFF';
+            context.fillText(countdown, canvas.width / 2 - 15, canvas.height / 2); // Display countdown
+    
+            if (countdown > 0) {
+                countdown--; // Decrease countdown value
+                setTimeout(displayCountdown, 1000); // Call this function again after 1 second
+            } else {
+                gameState = 1; // Start the game when countdown finishes
+                requestAnimationFrame(gameLoop);
+            }
+        }
         player1.score = 0;
         player2.score = 0;
-        gameState = 1;
-        requestAnimationFrame(gameLoop);
+        displayCountdown();
     }
 }
+
+game();
