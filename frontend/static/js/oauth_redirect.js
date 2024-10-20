@@ -1,8 +1,12 @@
 window.onload = function() {
-    // Check if the current URL contains the name of your HTML file
     if (window.location.pathname === '/oauth-redirect/') {
         handleOAuthCallback();
     }
+    if (localStorage.getItem('oauthLogin') === 'true')
+    {
+        document.getElementById('2fa-tickbox').disabled = true;
+    }
+
 };
 function handleOAuthCallback() {
     fetch('https://127.0.0.1:8005/api/oauth/get-oauth-tokens/', {  // Login container's endpoint
@@ -22,24 +26,25 @@ function handleOAuthCallback() {
         const refreshToken = data['refresh'];
 
         if (accessToken && refreshToken) {
-            // Store tokens in localStorage
             localStorage.setItem('access-token', accessToken);
             localStorage.setItem('refresh-token', refreshToken);
             localStorage.setItem('loggedIn', 'true');
-
-            // Redirect to homepage or dashboard after token storage
-            window.location.href = '/';
+            localStorage.setItem('oauthLogin', 'true');
+        
+            redirectToHomepage();
         } else {
             alert('OAuth login failed! Missing tokens.');
             redirectToHomepage();
-            //window.location.href = '/';
         }
     })
     .catch(error => {
         alert('OAuth login failed! Please try again.');
+        console.log('OAuth callback page');
         redirectToHomepage();
     });
 }
 function redirectToHomepage() {
-    window.location.href = '/';
+    setTimeout(() => {
+        window.location.href = '/';
+    }, 2000);
 }

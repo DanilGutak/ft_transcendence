@@ -21,6 +21,9 @@ from django.conf import settings
 from django.contrib.auth.hashers import make_password, check_password
 import json
 
+from datetime import datetime, timedelta
+
+
 class RegisterView(APIView):
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
@@ -93,14 +96,19 @@ class VerifyTwoFactorAuthView(APIView):
 
 class LogoutView(APIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = []#IsAuthenticated]
     def post(self, request):
-
+    
         refresh_token = request.data['refresh']
         if not refresh_token:
-            return JsonResponse({'error': 'Token is required'}, status=400)
-        token = RefreshToken(refresh_token)
-        token.blacklist()
+            return JsonResponse({'error': 'Refresh Token is required'}, status=400)
+        try:
+            # Attempt to blacklist the refresh token
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+        except Exception as e:
+            return JsonResponse({'error': 'Invalid or expired refresh token'}, status=400)
+
         logout(request)
         return JsonResponse({'message': 'User logged out successfully'}, status=200)
 
@@ -168,7 +176,7 @@ class OAuthCallbackView(APIView):
         # Extract the authorization code from the callback URL
         code = request.GET.get('code')
         if not code:
-            return redirect('/oauth-redirect')  # Redirect to a frontend route if the code is missing
+            return redirect('/oauth-redirect')
         # Exchange the authorization code for tokens
         #redirect_uri = request.build_absolute_uri(reverse('oauth_callback'))
         redirect_uri = 'https://127.0.0.1:8005/api/oauth/callback/'
@@ -184,52 +192,99 @@ class OAuthCallbackView(APIView):
 
         token_response = requests.post(token_url, data=token_data)
     
-        # Parse the tokens
         client.parse_request_body_response(token_response.text)
 
-        # Get user info
         userinfo_endpoint = settings.OAUTH_USERINFO_URL
         uri, headers, body = client.add_token(userinfo_endpoint)
         userinfo_response = requests.get(uri, headers=headers, data=body)
 
         user_info = userinfo_response.json()
 
-
 		# Extract user details from the OAuth provider's response
-        username = user_info.get('login')  # Username from 42 API
-        email = user_info.get('email')  # Email from 42 API
+        username = user_info.get('login')
+        email = user_info.get('email')
 
         if not email or not username:
             return redirect('/oauth-redirect')
             #return JsonResponse({'error': 'Incomplete user information'}, status=400)
 
-        # Check if the user already exists
+        # Check if the user already exists (by email)
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
             user = User.objects.create_user(username=username, email=email)  
             user.save()
 
-        # Generate access and refresh tokens for the user
+        token_json = token_response.json()
+
         refresh = RefreshToken.for_user(user)
         access = refresh.access_token
+        expires_in = token_json['expires_in']
+
+        expiration_time = datetime.now() + timedelta(seconds=expires_in)
 
         # Store the tokens in the session or return a success flag in the redirect URL
         request.session['access_token'] = str(access)
         request.session['refresh_token'] = str(refresh)
+        request.session['access_token_expiration'] = expiration_time.strftime('%Y-%m-%d %H:%M:%S')
 
-        # Redirect the user back to the frontend
-        return redirect('/oauth-redirect')  # Redirect to a frontend route after successful login
+        return redirect('/oauth-redirect')  # Successful 42 login
     
         '''return JsonResponse({
             'refresh': str(refresh),
             'access': str(access),
         }, status=200)'''
 
+def refresh_access_token(request):
+    refresh_token = request.session.get('refresh_token')
+    if not refresh_token:
+        return None  # Handle missing refresh token
+
+    token_url = 'https://api.intra.42.fr/oauth/token'
+    
+    token_data = {
+        'grant_type': 'refresh_token',
+        'client_id': settings.OAUTH_CLIENT_ID,
+        'client_secret': settings.OAUTH_CLIENT_SECRET,
+        'refresh_token': refresh_token,
+    }
+
+    token_response = requests.post(token_url, data=token_data)
+    
+    if token_response.status_code != 200:
+        return None  # Handle token refresh failure
+
+    token_json = token_response.json()
+
+    # Update access token and expiration time
+    access_token = token_json['access_token']
+    expires_in = token_json['expires_in']
+
+    expiration_time = datetime.now() + timedelta(seconds=expires_in)
+
+    # Update session with new access token and expiration
+    request.session['access_token'] = access_token
+    request.session['access_token_expiration'] = expiration_time.strftime('%Y-%m-%d %H:%M:%S')
+
+    return access_token
+
+def check_token_and_refresh(request):
+    expiration_time_str = request.session.get('access_token_expiration')
+    if not expiration_time_str:
+        return None
+
+    expiration_time = datetime.strptime(expiration_time_str, '%Y-%m-%d %H:%M:%S')
+
+    if expiration_time < datetime.now():
+        return refresh_access_token(request)
+
+    return request.session.get('access_token')
+
+
 class GetOAuthTokens(APIView):
     def get(self, request):
         # Retrieve tokens from the session
-        access_token = request.session.get('access_token')
+        access_token = check_token_and_refresh(request)
         refresh_token = request.session.get('refresh_token')
 
         if access_token and refresh_token:
