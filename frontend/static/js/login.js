@@ -154,47 +154,39 @@ async function logout() {
     if (!response.ok) {
       // If token refresh fails, force logout
       handleFailure("Session expired. Please log in again.");
-      localStorage.setItem('loggedIn', 'false');
-      localStorage.removeItem('access-token');
-      localStorage.removeItem('refresh-token');
-      document.getElementById('logged-in').classList.add('hidden');
-      document.getElementById('logged-out').classList.remove('hidden');
+      reset_local_storage();
       renderPage('login');
       return;
     } else {
       // If token refresh succeeds, retry logout
       handleSuccess("Logged out successfully");
-      localStorage.setItem('loggedIn', 'false');
-      localStorage.removeItem('access-token');
-      localStorage.removeItem('refresh-token');
-      document.getElementById('logged-in').classList.add('hidden');
-      document.getElementById('logged-out').classList.remove('hidden');
+      reset_local_storage();
       renderPage('login');
     }
-
-
-    //logout();
   }
   //case for other errors except success
   else if (!response.ok) {
     handleFailure("Failed to logout");
-    localStorage.setItem('loggedIn', 'false');
-    localStorage.removeItem('access-token');
-    localStorage.removeItem('refresh-token');
-    document.getElementById('logged-in').classList.add('hidden');
-    document.getElementById('logged-out').classList.remove('hidden');
+    reset_local_storage();
     renderPage('login');
   }
   //case for success
   else {
     handleSuccess("Logged out successfully");
-    localStorage.setItem('loggedIn', 'false');
-    localStorage.removeItem('access-token');
-    localStorage.removeItem('refresh-token');
-    document.getElementById('logged-in').classList.add('hidden');
-    document.getElementById('logged-out').classList.remove('hidden');
+    reset_local_storage();
     renderPage('login');
   }
+}
+
+function reset_local_storage() {
+  localStorage.setItem('loggedIn', 'false');
+  localStorage.removeItem('access-token');
+  localStorage.removeItem('refresh-token');
+  if (localStorage.getItem('oauthLogin')) {
+    localStorage.removeItem('oauthLogin');
+  }
+  document.getElementById('logged-in').classList.add('hidden');
+  document.getElementById('logged-out').classList.remove('hidden');
 }
 
 function login() { 
