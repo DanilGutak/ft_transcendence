@@ -176,7 +176,7 @@ class OAuthCallbackView(APIView):
         # Extract the authorization code from the callback URL
         code = request.GET.get('code')
         if not code:
-            return redirect('/oauth-redirect')  # Redirect to a frontend route if the code is missing
+            return redirect('/oauth-redirect')
         # Exchange the authorization code for tokens
         #redirect_uri = request.build_absolute_uri(reverse('oauth_callback'))
         redirect_uri = 'https://127.0.0.1:8005/api/oauth/callback/'
@@ -200,16 +200,15 @@ class OAuthCallbackView(APIView):
 
         user_info = userinfo_response.json()
 
-
 		# Extract user details from the OAuth provider's response
-        username = user_info.get('login')  # Username from 42 API
-        email = user_info.get('email')  # Email from 42 API
+        username = user_info.get('login')
+        email = user_info.get('email')
 
         if not email or not username:
             return redirect('/oauth-redirect')
             #return JsonResponse({'error': 'Incomplete user information'}, status=400)
 
-        # Check if the user already exists
+        # Check if the user already exists (by email)
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
@@ -218,23 +217,18 @@ class OAuthCallbackView(APIView):
 
         token_json = token_response.json()
 
-
-        # Generate access and refresh tokens for the user
         refresh = RefreshToken.for_user(user)
         access = refresh.access_token
         expires_in = token_json['expires_in']
 
-
         expiration_time = datetime.now() + timedelta(seconds=expires_in)
-
 
         # Store the tokens in the session or return a success flag in the redirect URL
         request.session['access_token'] = str(access)
         request.session['refresh_token'] = str(refresh)
         request.session['access_token_expiration'] = expiration_time.strftime('%Y-%m-%d %H:%M:%S')
 
-        # Redirect the user back to the frontend
-        return redirect('/oauth-redirect')  # Redirect to a frontend route after successful login
+        return redirect('/oauth-redirect')  # Successful 42 login
     
         '''return JsonResponse({
             'refresh': str(refresh),
