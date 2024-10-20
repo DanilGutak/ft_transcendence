@@ -243,6 +243,7 @@ gameForm.addEventListener('click', function(event) {
     if (gameStateFor4 === 0) {
         canvas.style.display = "block";
         document.getElementById('gameFor4-rules').style.display = 'none';
+        document.getElementById('gameFor4-button').textContent = 'The Game is Running';
         startGame();
     }
 });
