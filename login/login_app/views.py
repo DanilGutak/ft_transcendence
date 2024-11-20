@@ -208,12 +208,14 @@ class OAuthCallbackView(APIView):
             return redirect('/oauth-redirect')
             #return JsonResponse({'error': 'Incomplete user information'}, status=400)
 
-    	user = User.objects.get(username=username)
+        try:
+    	    user = User.objects.get(username=username)
         except User.DoesNotExist:
             try:
                 user = User.objects.get(email=email)
             except User.DoesNotExist:
                 user = User.objects.create_user(username=username, email=email)
+                user.save()
 
         token_json = token_response.json()
 
