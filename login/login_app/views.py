@@ -190,6 +190,7 @@ class OAuthCallbackView(APIView):
             'redirect_uri': redirect_uri,
         }
 
+        #asd
         token_response = requests.post(token_url, data=token_data)
     
         client.parse_request_body_response(token_response.text)
@@ -225,12 +226,12 @@ class OAuthCallbackView(APIView):
 
         expiration_time = datetime.now() + timedelta(seconds=expires_in)
 
-        # Store the tokens in the session or return a success flag in the redirect URL
+        # store the tokens in the session
         request.session['access_token'] = str(access)
         request.session['refresh_token'] = str(refresh)
         request.session['access_token_expiration'] = expiration_time.strftime('%Y-%m-%d %H:%M:%S')
 
-        return redirect('/oauth-redirect')  # Successful 42 login
+        return redirect('/oauth-redirect')  # successful 42 login
     
         '''return JsonResponse({
             'refresh': str(refresh),
@@ -240,7 +241,7 @@ class OAuthCallbackView(APIView):
 def refresh_access_token(request):
     refresh_token = request.session.get('refresh_token')
     if not refresh_token:
-        return None  # Handle missing refresh token
+        return None  # missing refresh token
 
     token_url = 'https://api.intra.42.fr/oauth/token'
     
@@ -254,17 +255,17 @@ def refresh_access_token(request):
     token_response = requests.post(token_url, data=token_data)
     
     if token_response.status_code != 200:
-        return None  # Handle token refresh failure
+        return None  # handle token refresh failure
 
     token_json = token_response.json()
 
-    # Update access token and expiration time
+    # update access token and expiration time
     access_token = token_json['access_token']
     expires_in = token_json['expires_in']
 
     expiration_time = datetime.now() + timedelta(seconds=expires_in)
 
-    # Update session with new access token and expiration
+    # update session with new access token and expiration
     request.session['access_token'] = access_token
     request.session['access_token_expiration'] = expiration_time.strftime('%Y-%m-%d %H:%M:%S')
 
@@ -285,7 +286,6 @@ def check_token_and_refresh(request):
 
 class GetOAuthTokens(APIView):
     def get(self, request):
-        # Retrieve tokens from the session
         access_token = check_token_and_refresh(request)
         refresh_token = request.session.get('refresh_token')
 
