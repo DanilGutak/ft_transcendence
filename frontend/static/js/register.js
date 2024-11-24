@@ -4,10 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
       register();
     });
     const loginForm = document.getElementById('register-login-button');
-    loginForm.addEventListener('click', function(event) {
-      document.getElementById('register').classList.add('hidden');
-      document.getElementById('login').classList.remove('hidden');
-    });
 
   
   });
@@ -22,7 +18,6 @@ function register() {
     const errorMessage = document.getElementById('error-message');
     const errorContainer = document.getElementById('error-container');
     const registerButton = document.getElementById('register-submit-button');
-    registerButton.disabled = true; 
     
     const data = {
       username: username.value,
@@ -76,11 +71,7 @@ function register() {
       }
 		
 		errorMessage.innerHTML += '</strong>';
-    setTimeout(() => {
-        errorMessage.classList.add('hidden');
-        errorContainer.classList.add('hidden');
-        registerButton.disabled = false;
-    }, 4000); //wait 4 secs then hide it
+    
 	});
 	
 }

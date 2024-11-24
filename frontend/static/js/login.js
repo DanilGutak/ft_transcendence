@@ -1,20 +1,18 @@
 document.addEventListener('DOMContentLoaded', () => {
   const loginForm = document.getElementById('login-button');
+  //disable enter key
+  document.addEventListener('keypress', function(event) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+    }
+  });
+
   checkLogin();
   loginForm.addEventListener('click', function(event) {
     event.preventDefault();
-    loginForm.disabled = true;
     login();
-    setTimeout(() => {
-      loginForm.disabled = false;
-    }, 2500);
+    
 
-  });
-  const registerForm = document.getElementById('register-button');
-  registerForm.addEventListener('click', function(event) {
-    event.preventDefault();
-    document.getElementById('register').classList.remove('hidden');
-    document.getElementById('login').classList.add('hidden');
   });
 
   const logoutForm = document.getElementById('logout-button');
@@ -239,24 +237,20 @@ function login() {
       document.getElementById('login-password').value = '';
       localStorage.setItem('access-token', data['access']);
       localStorage.setItem('refresh-token', data['refresh']);
-      setTimeout(() => {
-        loginSuccess();
-      }, 2000);
+     
+      loginSuccess();
+
+      
 
     }
 })
 .catch(error => {
     errorContainer.classList.remove('hidden');
     errorMessage.classList.remove('hidden');
-    //loginForm.disabled = false;
-    setTimeout(() => {
-      errorMessage.innerHTML = '<strong>Login failed! Try again later</strong>';
-    }, 2000);
-    // Show error message on failed login
-    setTimeout(() => {
-        errorMessage.classList.add('hidden');
-        errorContainer.classList.add('hidden');
-    }, 2000); //wait 4 secs then hide it
+    
+    errorMessage.innerHTML = '<strong>Login failed! Try again later</strong>';
+    
+    
 });
 }
 // press on the "Login" button in the login form
@@ -265,6 +259,33 @@ function loginSuccess() {
   document.getElementById('success-container').classList.add('hidden');
   document.getElementById('logged-in').classList.remove('hidden');
   document.getElementById('logged-out').classList.add('hidden');
+  // do request to check if 2fa is enabled:
+  response = fetch('/api/2fa/status', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('access-token')}`
+    }
+  })
+  //check that two_factor_enabled is true
+  console.log(response);
+  if (response.ok) {
+    const data = response.json();
+    if (data['two_factor_enabled']) {
+      document.getElementById('2fa-tickbox').checked = true;
+    }
+  }
+  document.getElementById('2fa-tickbox').disabled = false;
+  //clean form
+  document.getElementById('2fa').value = '';
+  document.getElementById('login-username').value = '';
+  document.getElementById('login-password').value = '';
+  document.getElementById('register-password').value = '';
+  document.getElementById('register-password2').value = '';
+  document.getElementById('register-email').value = '';
+  document.getElementById('register-username').value = '';
+
+  history.pushState('game', null, window.location.origin);
   renderPage('game');
 }
 
