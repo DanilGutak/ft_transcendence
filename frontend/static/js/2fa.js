@@ -17,21 +17,21 @@ document.addEventListener('DOMContentLoaded', () => {
         Submit2fa.disabled = true;
         setTimeout(() => {
             Submit2fa.disabled = false;
-        }, 20000);
+        }, 1000);
     });
     Send2fa.addEventListener('click', function(event) {
       send2fa();
       Send2fa.disabled = true;
         setTimeout(() => {
             Send2fa.disabled = false;
-        }, 20000);
+        }, 1000);
     });
     Tickbox2fa.addEventListener('click', function(event) {
       tickbox2fa();
       Tickbox2fa.disabled = true;
       setTimeout(() => {
         Tickbox2fa.disabled = false;
-    }, 2000);
+    }, 1000);
     });
   });
 

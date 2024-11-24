@@ -169,17 +169,29 @@ class OAuthLoginView(APIView):
         
         return JsonResponse({'oauth_url': oauth_url})
 
-class OAuthCallbackView(APIView):
-    def get(self, request):
-        print("OAuth callback triggered")
+class OAuthCallbackView(APIView): # this gets called when the route (urls.py) "/api/oauth/callback" is accessed 
+    def redirect_with_param(self, request, param):
+        # add a new variable to the session to decide success or not
+        try:
+            #request.session['oauth_redirected'] = True
+            request.session['oauth_status'] = param['status']
+            request.session.modified = True
+            if (param['status'] == 'success'):
+                return redirect(f'/?oauth_redirected=true')
+            elif param['status'] == 'failure':
+                return redirect(f'/?oauth_redirected=false')
+        except Exception as e:
+            print(e)
+            return redirect('/')
 
+    def get(self, request):
         # Extract the authorization code from the callback URL
-        code = request.GET.get('code')
+        code = request.GET.get('code') #code is given to me by 42 in case of successful auth from 42
         if not code:
-            return redirect('/oauth-redirect')
-        # Exchange the authorization code for tokens
+            return self.redirect_with_param(request, {'status': 'failure'})
+
         #redirect_uri = request.build_absolute_uri(reverse('oauth_callback'))
-        redirect_uri = 'https://127.0.0.1:8005/api/oauth/callback/'
+        redirect_uri = 'https://127.0.0.1:8005/api/oauth/callback/' #this is the endpoint where THIS class is accessed by, later 42's endpoint will redirect here again
         token_url = 'https://api.intra.42.fr/oauth/token'
 
         token_data = {
@@ -190,14 +202,20 @@ class OAuthCallbackView(APIView):
             'redirect_uri': redirect_uri,
         }
 
-        #asd
-        token_response = requests.post(token_url, data=token_data)
-    
+        token_response = requests.post(token_url, data=token_data)  #this is where the token_data is sent to 42's endpoint that expect EXACTLY those variables
+
+        #check response
+        if not token_response.ok:
+            return self.redirect_with_param(request, {'status': 'failure'})
+
         client.parse_request_body_response(token_response.text)
 
         userinfo_endpoint = settings.OAUTH_USERINFO_URL
         uri, headers, body = client.add_token(userinfo_endpoint)
         userinfo_response = requests.get(uri, headers=headers, data=body)
+        #check response
+        if not userinfo_response.ok:
+            return self.redirect_with_param(request, {'status': 'failure'})
 
         user_info = userinfo_response.json()
 
@@ -206,11 +224,11 @@ class OAuthCallbackView(APIView):
         email = user_info.get('email')
 
         if not email or not username:
-            return redirect('/oauth-redirect')
+            return self.redirect_with_param(request, {'status': 'failure'})
             #return JsonResponse({'error': 'Incomplete user information'}, status=400)
 
         try:
-    	    user = User.objects.get(username=username)
+            user = User.objects.get(username=username)
         except User.DoesNotExist:
             try:
                 user = User.objects.get(email=email)
@@ -226,17 +244,12 @@ class OAuthCallbackView(APIView):
 
         expiration_time = datetime.now() + timedelta(seconds=expires_in)
 
-        # store the tokens in the session
+        # store the tokens in the backend
         request.session['access_token'] = str(access)
         request.session['refresh_token'] = str(refresh)
         request.session['access_token_expiration'] = expiration_time.strftime('%Y-%m-%d %H:%M:%S')
 
-        return redirect('/oauth-redirect')  # successful 42 login
-    
-        '''return JsonResponse({
-            'refresh': str(refresh),
-            'access': str(access),
-        }, status=200)'''
+        return self.redirect_with_param(request, {'status': 'success'})
 
 def refresh_access_token(request):
     refresh_token = request.session.get('refresh_token')
@@ -283,6 +296,12 @@ def check_token_and_refresh(request):
 
     return request.session.get('access_token')
 
+from rest_framework.response import Response
+
+class OAuthStatusView(APIView):
+    def get(self, request):
+        status = request.session.pop('oauth_status', None)  # Clear it after retrieval
+        return Response({'status': status})
 
 class GetOAuthTokens(APIView):
     def get(self, request):
