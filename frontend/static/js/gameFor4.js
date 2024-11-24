@@ -1,6 +1,9 @@
+import { drawBall } from './modules/game_module.js';
+
 function gameFor4() {
     const canvas = document.getElementById('gameFor4-canvas');
     const context = canvas.getContext('2d');
+    const maxScore = 5;
 
     const paddleWidth = 100;
     const paddleHeight = 10;
@@ -55,14 +58,6 @@ function gameFor4() {
         dy: 4,
         color: '#FFF'
     };
-
-    function drawBall() {
-        context.fillStyle = ball.color;
-        context.beginPath();
-        context.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2, true);
-        context.closePath();
-        context.fill();
-    }
 
     function drawPaddle(player) {
         context.fillStyle = player.color;
@@ -194,7 +189,7 @@ function gameFor4() {
         drawPaddle(player3);
         drawPaddle(player4);
         moveBall();
-        drawBall();
+        drawBall(context, ball);
     }
 
     function checkGameOver() {

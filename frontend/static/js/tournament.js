@@ -1,3 +1,5 @@
+import { drawBall } from './modules/game_module.js';
+
 function tournament() {
     const canvas = document.getElementById('tournament-canvas');
     const context = canvas.getContext('2d');
@@ -41,14 +43,6 @@ function tournament() {
     let gameState = 0; // 0: Not started, 1: Running, 2: Countdown
     let countdown = 3; // Countdown timer
     let keyState = {};
-
-    function drawBall() {
-        context.fillStyle = ball.color;
-        context.beginPath();
-        context.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2, true);
-        context.closePath();
-        context.fill();
-    }
 
     function drawPaddle(x, y, color) {
         context.fillStyle = color;
@@ -257,7 +251,7 @@ function tournament() {
         drawPaddle(0, currentMatch.leftPlayer.y, currentMatch.leftPlayer.color);
         drawPaddle(canvas.width - paddleWidth, currentMatch.rightPlayer.y, currentMatch.rightPlayer.color);
         moveBall();
-        drawBall();
+        drawBall(context, ball);
 
         context.font = '30px Arial';
         context.fillStyle = '#FFF';

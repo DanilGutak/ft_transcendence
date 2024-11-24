@@ -1,3 +1,5 @@
+import { drawBall } from './modules/game_module.js';
+
 function game() {
     const canvas = document.getElementById('game-canvas');
     const context = canvas.getContext('2d');
@@ -39,14 +41,7 @@ function game() {
         dy: 4,
         color: '#FFF'
     };
-    
-    function drawBall() {
-        context.fillStyle = ball.color;
-        context.beginPath();
-        context.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2, true);
-        context.closePath();
-        context.fill();
-    }
+
     
     function drawPaddle(player) {
         context.fillStyle = player.color;
@@ -116,8 +111,7 @@ function game() {
         drawPaddle(player1);
         drawPaddle(player2);
         moveBall();
-        drawBall();
-    
+        drawBall(context, ball);
     }
     
     function checkGameOver() {
