@@ -111,16 +111,11 @@ async function checkLogin() {
           localStorage.removeItem('access-token');
           localStorage.removeItem('refresh-token');
         }
-
-
       }
-
-
       else {
         document.getElementById('logged-in').classList.add('hidden');
         document.getElementById('logged-out').classList.remove('hidden');
       }
-    
     }
   }
 }
@@ -140,8 +135,6 @@ async function logout() {
     },
     body: JSON.stringify(data),
   })
-
-  // If unauthorized, attempt to refresh the token and retry logout
 
   //case of unauthorized
   if (response.status === 401) {

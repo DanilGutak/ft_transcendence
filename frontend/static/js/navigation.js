@@ -7,7 +7,6 @@ function hideAllPages() {
 }
 
 function renderPage(path) {
-    console.log("---------BEFOREpath: " + path);
 
     if (localStorage.getItem('loggedIn') === 'true') {
         if (path === 'login' || path === 'register' || path === '2fa') {
@@ -24,7 +23,6 @@ function renderPage(path) {
         document.getElementById('home').classList.remove('hidden');
     }
     else {
-        console.log("--------------path: " + path);
         document.getElementById(path).classList.remove('hidden');
     }
 }

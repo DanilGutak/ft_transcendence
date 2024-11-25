@@ -181,7 +181,6 @@ class OAuthCallbackView(APIView): # this gets called when the route (urls.py) "/
             elif param['status'] == 'failure':
                 return redirect(f'/?oauth_redirected=false')
         except Exception as e:
-            print(e)
             return redirect('/')
 
     def get(self, request):
@@ -265,6 +264,7 @@ def refresh_access_token(request):
         'refresh_token': refresh_token,
     }
 
+    #do a post request to oauth's endpoint
     token_response = requests.post(token_url, data=token_data)
     
     if token_response.status_code != 200:
@@ -272,13 +272,12 @@ def refresh_access_token(request):
 
     token_json = token_response.json()
 
-    # update access token and expiration time
     access_token = token_json['access_token']
     expires_in = token_json['expires_in']
 
     expiration_time = datetime.now() + timedelta(seconds=expires_in)
 
-    # update session with new access token and expiration
+    # update these tokens
     request.session['access_token'] = access_token
     request.session['access_token_expiration'] = expiration_time.strftime('%Y-%m-%d %H:%M:%S')
 
