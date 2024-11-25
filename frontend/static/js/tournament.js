@@ -294,17 +294,6 @@ function tournament() {
         animationFrameId = requestAnimationFrame(gameLoop);
     }
 
-    document.addEventListener('keydown', (event) => {
-        keyState[event.key] = true;
-    });
-
-    document.addEventListener('keyup', (event) => {
-        keyState[event.key] = false;
-        if (event.key === 'Enter') {
-            startTournament();
-        }
-    });
-
     const gameForm = document.getElementById('player-names-form');
     gameForm.addEventListener('submit', startTournament);
 
