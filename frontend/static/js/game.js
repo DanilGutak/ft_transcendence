@@ -153,7 +153,7 @@ function game() {
     gameForm.addEventListener('click', function(event) {
         if (gameState === 0) {
             canvas.style.display = "block";
-            document.getElementById('game-rules').style.display = 'none';
+            // document.getElementById('game-rules').style.display = 'none';
             document.getElementById('game-button').textContent = 'The Game is Running';
             startGame();
         }

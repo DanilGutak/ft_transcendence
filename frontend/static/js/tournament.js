@@ -125,7 +125,7 @@ function tournament() {
             players[i - 1].name = inputValue || `Player ${i}`;
         }
 
-        document.getElementById('tournament-rules').style.display = 'none';
+        // document.getElementById('tournament-rules').style.display = 'none';
         gameState = 1;
         tournamentStage = 'semi-finals';
         remainingPlayers = [...players];
