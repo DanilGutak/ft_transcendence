@@ -9,16 +9,22 @@
                 </div>
                 <form id="player-names-form">
                     <div class="form-group">
-                        <input type="text" class="form-control mb-2" id="player1" placeholder="Player 1 Name" style="background-color: red;">
-                        <input type="text" class="form-control mb-2" id="player2" placeholder="Player 2 Name" style="background-color: greenyellow;">
-                        <input type="text" class="form-control mb-2" id="player3" placeholder="Player 3 Name" style="background-color: rgb(43, 100, 255);">
-                        <input type="text" class="form-control mb-2" id="player4" placeholder="Player 4 Name" style="background-color: yellow;">
+                        <input type="text" class="form-control mb-2" id="player1" placeholder="Player 1 Name"
+                            style="background-color: red;" maxlength="10">
+                        <input type="text" class="form-control mb-2" id="player2" placeholder="Player 2 Name"
+                            style="background-color: greenyellow;" maxlength="10">
+                        <input type="text" class="form-control mb-2" id="player3" placeholder="Player 3 Name"
+                            style="background-color: rgb(43, 100, 255);" maxlength="10">
+                        <input type="text" class="form-control mb-2" id="player4" placeholder="Player 4 Name"
+                            style="background-color: yellow;" maxlength="10">
                     </div>
                     <button id="tournament-button" type="submit" class="btn btn-primary">Start Tournament</button>
                 </form>
             </div>
         </div>
     </div>
+    <br>
+    <canvas id="tournament-canvas" width="750" height="600"></canvas>
     <br>
     <div id="tournament-rules" class="text-center">
         <h3>Welcome to the Game!</h3>
@@ -29,6 +35,5 @@
         <p>The game proceeds until the winner is decided between all the players!</p>
         <p>Press the "Start Tournament" button to begin.</p>
     </div>
-    <canvas id="tournament-canvas" width="750" height="600"></canvas>
     
 </div>

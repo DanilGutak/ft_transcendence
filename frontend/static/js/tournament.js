@@ -1,3 +1,5 @@
+import { drawBall } from './modules/game_module.js';
+
 function tournament() {
     const canvas = document.getElementById('tournament-canvas');
     const context = canvas.getContext('2d');
@@ -42,13 +44,8 @@ function tournament() {
     let countdown = 3; // Countdown timer
     let keyState = {};
 
-    function drawBall() {
-        context.fillStyle = ball.color;
-        context.beginPath();
-        context.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2, true);
-        context.closePath();
-        context.fill();
-    }
+    let animationFrameId;
+
 
     function drawPaddle(x, y, color) {
         context.fillStyle = color;
@@ -118,13 +115,17 @@ function tournament() {
     function startTournament(event) {
         event.preventDefault(); // Prevent form submission
 
+        if (animationFrameId) {
+            cancelAnimationFrame(animationFrameId);
+        }
+
         // Get player names from input fields
         for (let i = 1; i <= 4; i++) {
             const inputValue = document.getElementById(`player${i}`).value.trim();
             players[i - 1].name = inputValue || `Player ${i}`;
         }
 
-        document.getElementById('tournament-rules').style.display = 'none';
+        // document.getElementById('tournament-rules').style.display = 'none';
         gameState = 1;
         tournamentStage = 'semi-finals';
         remainingPlayers = [...players];
@@ -168,6 +169,14 @@ function tournament() {
         displayCountdown();
     }
 
+    document.addEventListener('keydown', event => {
+        keyState[event.key] = true;
+    });
+    
+    document.addEventListener('keyup', event => {
+        keyState[event.key] = false;
+    });
+
     function resetMatch() {
         currentMatch.leftPlayer.score = 0;
         currentMatch.rightPlayer.score = 0;
@@ -210,7 +219,7 @@ function tournament() {
         context.clearRect(0, 0, canvas.width, canvas.height);
         context.font = '30px Arial';
         context.fillStyle = '#FFF';
-        context.fillText('Tournament Results', canvas.width / 2 - 120, 50);
+        context.fillText('Tournament Results', canvas.width / 2 - 100, 50);
         for (let i = 0; i < 4; i++) {
             context.fillStyle = tournamentResults[i].color;
             context.fillText(
@@ -257,7 +266,7 @@ function tournament() {
         drawPaddle(0, currentMatch.leftPlayer.y, currentMatch.leftPlayer.color);
         drawPaddle(canvas.width - paddleWidth, currentMatch.rightPlayer.y, currentMatch.rightPlayer.color);
         moveBall();
-        drawBall();
+        drawBall(context, ball);
 
         context.font = '30px Arial';
         context.fillStyle = '#FFF';
@@ -266,9 +275,10 @@ function tournament() {
         context.fillText(
             `${currentMatch.leftPlayer.name} vs ${currentMatch.rightPlayer.name}`,
             canvas.width / 2 - 100,
-            50
+            50,
+            270
         );
-        context.fillText(`Stage: ${tournamentStage}`, canvas.width / 2 - 70, canvas.height - 20);
+        context.fillText(`Stage: ${tournamentStage}`, canvas.width / 2 - 90, canvas.height - 20);
     }
 
     function displayCountdown() {
@@ -290,19 +300,8 @@ function tournament() {
             render();
             checkMatchOver();
         }
-        requestAnimationFrame(gameLoop);
+        animationFrameId = requestAnimationFrame(gameLoop);
     }
-
-    document.addEventListener('keydown', (event) => {
-        keyState[event.key] = true;
-    });
-
-    document.addEventListener('keyup', (event) => {
-        keyState[event.key] = false;
-        if (event.key === 'Enter') {
-            startTournament();
-        }
-    });
 
     const gameForm = document.getElementById('player-names-form');
     gameForm.addEventListener('submit', startTournament);

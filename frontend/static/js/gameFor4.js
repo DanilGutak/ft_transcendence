@@ -1,6 +1,10 @@
+import { drawBall, resetBall } from './modules/game_module.js';
+
 function gameFor4() {
     const canvas = document.getElementById('gameFor4-canvas');
     const context = canvas.getContext('2d');
+    const gameButton = document.getElementById('gameFor4-button');
+    const maxScore = 5;
 
     const paddleWidth = 100;
     const paddleHeight = 10;
@@ -8,7 +12,7 @@ function gameFor4() {
 
     const ballRadius = 10;
 
-    const startingPlayScore = 10;
+    const startingPlayScore = 3;
 
     const player1 = {
         x: (canvas.width - paddleWidth) / 2,
@@ -56,13 +60,7 @@ function gameFor4() {
         color: '#FFF'
     };
 
-    function drawBall() {
-        context.fillStyle = ball.color;
-        context.beginPath();
-        context.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2, true);
-        context.closePath();
-        context.fill();
-    }
+    let animationFrameId;
 
     function drawPaddle(player) {
         context.fillStyle = player.color;
@@ -72,46 +70,7 @@ function gameFor4() {
         context.strokeRect(player.x, player.y, player.width, player.height);
     }
 
-    function resetBall() {
-        ball.x = canvas.width / 2;
-        ball.y = canvas.height / 2;
-        
-        // Randomly choose a direction: 0 = right, 1 = left, 2 = up, 3 = down
-        const direction = Math.floor(Math.random() * 4);
-        
-        switch(direction) {
-            case 0: // right
-                ball.dx = ball.speed;
-                ball.dy = Math.random() * ball.speed * 2 - ball.speed; // random vertical direction
-                break;
-            case 1: // left
-                ball.dx = -ball.speed;
-                ball.dy = Math.random() * ball.speed * 2 - ball.speed; // random vertical direction
-                break;
-            case 2: // up
-                ball.dx = Math.random() * ball.speed * 2 - ball.speed; // random horizontal direction
-                ball.dy = -ball.speed;
-                break;
-            case 3: // down
-                ball.dx = Math.random() * ball.speed * 2 - ball.speed; // random horizontal direction
-                ball.dy = ball.speed;
-                break;
-        }
-    }
-
     function handlePaddleCollision(ball, paddle, paddleSide) {
-        // const paddleCenter = (paddleSide === 'top' || paddleSide === 'bottom') 
-        //     ? paddle.x + paddleWidth / 2 
-        //     : paddle.y + paddleHeight / 2;
-        
-        // const distanceFromCenter = (paddleSide === 'top' || paddleSide === 'bottom') 
-        //     ? ball.x - paddleCenter 
-        //     : ball.y - paddleCenter;
-        
-        // const maxBounceAngle = Math.PI / 4; // 45 degrees
-        // const normalizedDistance = distanceFromCenter / ((paddleSide === 'top' || paddleSide === 'bottom') ? paddleWidth / 2 : paddleHeight / 2);
-        // const bounceAngle = normalizedDistance * maxBounceAngle;
-        // const speed = Math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy);
         let paddleCenter, distanceFromCenter, normalizedDistance;
 
         if (paddleSide === 'top' || paddleSide === 'bottom') {
@@ -168,21 +127,23 @@ function gameFor4() {
             handlePaddleCollision(ball, player4, 'right');
         }
         // Ball out of bounds
-        else if (ball.y + ball.radius > canvas.height) {
-            player1.score--;
-            resetBall();
-        }
-        else if (ball.y - ball.radius < 0) {
-            player2.score--;
-            resetBall();
-        }
-        else if (ball.x - ball.radius < 0) {
-            player3.score--;
-            resetBall();
-        }
-        else if (ball.x + ball.radius > canvas.width) {
-            player4.score--;
-            resetBall();
+        else {
+            if (ball.y + ball.radius > canvas.height) {
+                player1.score--;
+                resetBall(true, canvas, ball);
+            }
+            else if (ball.y - ball.radius < 0) {
+                player2.score--;
+                resetBall(true, canvas, ball);
+            }
+            else if (ball.x - ball.radius < 0) {
+                player3.score--;
+                resetBall(true, canvas, ball);
+            }
+            else if (ball.x + ball.radius > canvas.width) {
+                player4.score--;
+                resetBall(true, canvas, ball);
+            }
         }
     }
 
@@ -194,7 +155,7 @@ function gameFor4() {
         drawPaddle(player3);
         drawPaddle(player4);
         moveBall();
-        drawBall();
+        drawBall(context, ball);
     }
 
     function checkGameOver() {
@@ -213,12 +174,12 @@ function gameFor4() {
             context.fillText(player2.score, canvas.width / 2, 30);
             context.fillText(player3.score, 20, canvas.height / 2);
             context.fillText(player4.score, canvas.width - 40, canvas.height / 2);
-            requestAnimationFrame(gameLoop);
+            animationFrameId = requestAnimationFrame(gameLoop);
         } else {
             context.font = '50px Arial';
             context.fillText('Game Over', canvas.width / 2 - 150, canvas.height / 2 - 100);
-            const gameButton = document.getElementById('gameFor4-button');
-            gameButton.textContent = 'Restart Game for 4';
+            gameButton.textContent = 'Restart Game';
+            gameButton.style.display = 'block';
         }
     }
 
@@ -231,19 +192,12 @@ function gameFor4() {
 
     document.addEventListener('keyup', event => {
         keyStateFor4[event.key] = false;
-        if (event.key === 'Enter') {
-            canvas.style.display = "block";
-            document.getElementById('gameFor4-rules').style.display = 'none';
-            startGame();
-        }
     });
 
     const gameForm = document.getElementById('gameFor4-button');
     gameForm.addEventListener('click', function(event) {
         if (gameStateFor4 === 0) {
             canvas.style.display = "block";
-            document.getElementById('gameFor4-rules').style.display = 'none';
-            document.getElementById('gameFor4-button').textContent = 'The Game is Running';
             startGame();
         }
     });
@@ -276,10 +230,14 @@ function gameFor4() {
     }
 
 
-    function startGame() {
+    function startGame() {        
+        if (animationFrameId) {
+            cancelAnimationFrame(animationFrameId);
+        }
         if (gameStateFor4 === 1) {
             return;
         }
+        gameButton.style.display = 'none';
         player1.score = startingPlayScore;
         player2.score = startingPlayScore;
         player3.score = startingPlayScore;

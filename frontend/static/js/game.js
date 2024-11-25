@@ -1,6 +1,9 @@
+import { drawBall, resetBall } from './modules/game_module.js';
+
 function game() {
     const canvas = document.getElementById('game-canvas');
     const context = canvas.getContext('2d');
+    const gameButton = document.getElementById('game-button');
     const netWidth = 4;
     const netHeight = canvas.height;
     
@@ -9,7 +12,7 @@ function game() {
     const paddleSpeed = 10;
     
     const ballRadius = 10;
-    
+
     
     const player1 = {
         x: 5,
@@ -39,14 +42,8 @@ function game() {
         dy: 4,
         color: '#FFF'
     };
-    
-    function drawBall() {
-        context.fillStyle = ball.color;
-        context.beginPath();
-        context.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2, true);
-        context.closePath();
-        context.fill();
-    }
+
+    let animationFrameId;
     
     function drawPaddle(player) {
         context.fillStyle = player.color;
@@ -54,13 +51,6 @@ function game() {
         context.lineWidth = 2;
         context.strokeStyle = 'black';
         context.strokeRect(player.x, player.y, player.width, player.height);
-    }
-    function resetBall() {
-        ball.x = canvas.width / 2;
-        ball.y = canvas.height / 2;
-        ball.dx = -ball.dx;
-        ball.dy = -ball.dy;
-    
     }
     
     function moveBall() {
@@ -77,7 +67,7 @@ function game() {
             else {
                 player1.score++;
             }
-            resetBall();
+            resetBall(false, canvas, ball); // ifFourPlayersMode is false
         }
         if (ball.x + ball.radius > player2.x && ball.y > player2.y && ball.y < player2.y + paddleHeight) {
             // Collision with player2 paddle
@@ -116,8 +106,7 @@ function game() {
         drawPaddle(player1);
         drawPaddle(player2);
         moveBall();
-        drawBall();
-    
+        drawBall(context, ball);
     }
     
     function checkGameOver() {
@@ -134,14 +123,14 @@ function game() {
             context.font = '30px Arial';
             context.fillText(player1.score, canvas.width / 4, 50);
             context.fillText(player2.score, 3 * canvas.width / 4, 50);
-            requestAnimationFrame(gameLoop);
+            animationFrameId = requestAnimationFrame(gameLoop);
         }
         else
         {
             context.font = '50px Arial';
             context.fillText('Game Over', canvas.width / 2 - 150, canvas.height / 2 - 100);
-            const gameButton = document.getElementById('game-button');
             gameButton.textContent = 'Restart Game';
+            gameButton.style.display = 'block';
         }
         
     
@@ -156,20 +145,15 @@ function game() {
     
     document.addEventListener('keyup', event => {
         keyState[event.key] = false;
-        if (event.key === 'Enter') {
-            startGame();
-        }
     });
     
     const gameForm = document.getElementById('game-button');
-    gameForm.addEventListener('click', function(event) {
+    gameButton.addEventListener('click', function(event) {
         if (gameState === 0) {
             canvas.style.display = "block";
-            document.getElementById('game-rules').style.display = 'none';
-            document.getElementById('game-button').textContent = 'The Game is Running';
             startGame();
         }
-      });
+    });
     
     function updatePaddles() {
         if (keyState['w'] && player1.y > 0) {
@@ -189,11 +173,14 @@ function game() {
     
     
     function startGame() {
-    
+        if (animationFrameId) {
+            cancelAnimationFrame(animationFrameId);
+        }
         if (gameState === 1) {
             return;
         }
-        
+        gameButton.style.display = 'none'; // Hide the button
+
         let countdown = 3; // Start countdown from 3
 
         function displayCountdown() {
