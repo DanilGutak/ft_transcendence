@@ -269,8 +269,6 @@ function loginSuccess() {
       'Authorization': `Bearer ${localStorage.getItem('access-token')}`
     }
   })
-  //check that two_factor_enabled is true
-  console.log(response);
   if (response.ok) {
     const data = response.json();
     if (data['two_factor_enabled']) {

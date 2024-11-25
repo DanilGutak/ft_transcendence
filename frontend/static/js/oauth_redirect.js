@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.history.replaceState({}, document.title, newUrl);
     }
     
-    //console.log(sessionStorage.getItem('oauth_redirected') === 'true');
     // Proceed only if the flag exists in sessionStorage
     if (!oauthRedirected) {
         return;
