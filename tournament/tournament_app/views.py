@@ -36,8 +36,8 @@ class PostTournamentView(APIView):
                 'maxPriorityFeePerGas': w3.to_wei('1', 'gwei')
             })
             signed_txn = w3.eth.account.sign_transaction(transaction, private_key)
-            txn_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+            txn_hash = w3.eth.send_raw_transaction(signed_txn.raw_transaction)
             receipt = w3.eth.wait_for_transaction_receipt(txn_hash)
             return JsonResponse({'message': 'Results were send to blockchain successfully'}, status=201)
-        except Exception as e:  
+        except Exception as e:
             return JsonResponse({'error': "could not send results to blochain"}, status=400)
