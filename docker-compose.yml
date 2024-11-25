@@ -1,48 +1,48 @@
 services:
-  #init-elasticsearch:
-  #  image: alpine/curl:8.8.0
-  #  container_name: init-elasticsearch
-  #  environment:
-  #    - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
-  #  volumes:
-  #    - ./init_elasticsearch.sh:/init_elasticsearch.sh
-  #  entrypoint: "sh init_elasticsearch.sh"
-  #  depends_on:
-  #    - elasticsearch
-  #elasticsearch:
-    #image: elasticsearch:7.17.0
-    #container_name: elasticsearch
-    #environment:
-    #  - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
-    #ports:
-    #  - "9200:9200"
-    #volumes:
-    #  - ./certs:/usr/share/elasticsearch/config/certs
-  #  #  - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-  #kibana:
-  #  image: kibana:7.17.0
-  #  container_name: kibana
-  #  environment:
-  #    - KIBANA_PASSWORD=${ELASTIC_PASSWORD}
-  #  ports:
-  #    - "5601:5601"
-  #  volumes:
-  #    - ./certs:/usr/share/kibana/config/certs
-  #    - ./kibana.yml:/usr/share/kibana/config/kibana.yml
-  #  depends_on:
-  #    - elasticsearch
-  #logstash:
-  #  image: logstash:7.17.0
-  #  container_name: logstash
-  #  volumes:
-  #    - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
-  #    - ./backend_logs:/var/log/backend
-  #    - ./certs:/usr/share/logstash/config/certs
-  #    - ./logstash.yml:/usr/share/logstash/config/logstash.yml
-  #  environment:
-  #    - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
-  #  depends_on:
-  #    - elasticsearch
+  init-elasticsearch:
+    image: alpine/curl:8.8.0
+    container_name: init-elasticsearch
+    environment:
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+    volumes:
+      - ./init_elasticsearch.sh:/init_elasticsearch.sh
+    entrypoint: "sh init_elasticsearch.sh"
+    depends_on:
+      - elasticsearch
+  elasticsearch:
+    image: elasticsearch:7.17.0
+    container_name: elasticsearch
+    environment:
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+    ports:
+      - "9200:9200"
+    volumes:
+      - ./certs:/usr/share/elasticsearch/config/certs
+      - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+  kibana:
+    image: kibana:7.17.0
+    container_name: kibana
+    environment:
+      - KIBANA_PASSWORD=${ELASTIC_PASSWORD}
+    ports:
+      - "5601:5601"
+    volumes:
+      - ./certs:/usr/share/kibana/config/certs
+      - ./kibana.yml:/usr/share/kibana/config/kibana.yml
+    depends_on:
+      - elasticsearch
+  logstash:
+    image: logstash:7.17.0
+    container_name: logstash
+    volumes:
+      - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+      - ./backend_logs:/var/log/backend
+      - ./certs:/usr/share/logstash/config/certs
+      - ./logstash.yml:/usr/share/logstash/config/logstash.yml
+    environment:
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+    depends_on:
+      - elasticsearch
   frontend:
     #image: frontend
     container_name: frontend
