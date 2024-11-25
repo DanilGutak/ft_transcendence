@@ -3,6 +3,7 @@ import { drawBall, resetBall } from './modules/game_module.js';
 function gameFor4() {
     const canvas = document.getElementById('gameFor4-canvas');
     const context = canvas.getContext('2d');
+    const gameButton = document.getElementById('gameFor4-button');
     const maxScore = 5;
 
     const paddleWidth = 100;
@@ -11,7 +12,7 @@ function gameFor4() {
 
     const ballRadius = 10;
 
-    const startingPlayScore = 10;
+    const startingPlayScore = 3;
 
     const player1 = {
         x: (canvas.width - paddleWidth) / 2,
@@ -177,8 +178,8 @@ function gameFor4() {
         } else {
             context.font = '50px Arial';
             context.fillText('Game Over', canvas.width / 2 - 150, canvas.height / 2 - 100);
-            const gameButton = document.getElementById('gameFor4-button');
-            gameButton.textContent = 'Restart Game for 4';
+            gameButton.textContent = 'Restart Game';
+            gameButton.style.display = 'block';
         }
     }
 
@@ -191,19 +192,12 @@ function gameFor4() {
 
     document.addEventListener('keyup', event => {
         keyStateFor4[event.key] = false;
-        // if (event.key === 'Enter') {
-        //     canvas.style.display = "block";
-        //     // document.getElementById('gameFor4-rules').style.display = 'none';
-        //     startGame();
-        // }
     });
 
     const gameForm = document.getElementById('gameFor4-button');
     gameForm.addEventListener('click', function(event) {
         if (gameStateFor4 === 0) {
             canvas.style.display = "block";
-            // document.getElementById('gameFor4-rules').style.display = 'none';
-            document.getElementById('gameFor4-button').textContent = 'The Game is Running';
             startGame();
         }
     });
@@ -243,6 +237,7 @@ function gameFor4() {
         if (gameStateFor4 === 1) {
             return;
         }
+        gameButton.style.display = 'none';
         player1.score = startingPlayScore;
         player2.score = startingPlayScore;
         player3.score = startingPlayScore;

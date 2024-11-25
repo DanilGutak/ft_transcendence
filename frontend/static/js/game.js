@@ -3,6 +3,7 @@ import { drawBall, resetBall } from './modules/game_module.js';
 function game() {
     const canvas = document.getElementById('game-canvas');
     const context = canvas.getContext('2d');
+    const gameButton = document.getElementById('game-button');
     const netWidth = 4;
     const netHeight = canvas.height;
     
@@ -128,8 +129,8 @@ function game() {
         {
             context.font = '50px Arial';
             context.fillText('Game Over', canvas.width / 2 - 150, canvas.height / 2 - 100);
-            const gameButton = document.getElementById('game-button');
             gameButton.textContent = 'Restart Game';
+            gameButton.style.display = 'block';
         }
         
     
@@ -147,14 +148,12 @@ function game() {
     });
     
     const gameForm = document.getElementById('game-button');
-    gameForm.addEventListener('click', function(event) {
+    gameButton.addEventListener('click', function(event) {
         if (gameState === 0) {
             canvas.style.display = "block";
-            // document.getElementById('game-rules').style.display = 'none';
-            document.getElementById('game-button').textContent = 'The Game is Running';
             startGame();
         }
-      });
+    });
     
     function updatePaddles() {
         if (keyState['w'] && player1.y > 0) {
@@ -180,7 +179,8 @@ function game() {
         if (gameState === 1) {
             return;
         }
-        
+        gameButton.style.display = 'none'; // Hide the button
+
         let countdown = 3; // Start countdown from 3
 
         function displayCountdown() {

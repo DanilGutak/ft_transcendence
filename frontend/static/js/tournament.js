@@ -219,7 +219,7 @@ function tournament() {
         context.clearRect(0, 0, canvas.width, canvas.height);
         context.font = '30px Arial';
         context.fillStyle = '#FFF';
-        context.fillText('Tournament Results', canvas.width / 2 - 120, 50);
+        context.fillText('Tournament Results', canvas.width / 2 - 100, 50);
         for (let i = 0; i < 4; i++) {
             context.fillStyle = tournamentResults[i].color;
             context.fillText(
