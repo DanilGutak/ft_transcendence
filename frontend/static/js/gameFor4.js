@@ -1,4 +1,4 @@
-import { drawBall } from './modules/game_module.js';
+import { drawBall, resetBall } from './modules/game_module.js';
 
 function gameFor4() {
     const canvas = document.getElementById('gameFor4-canvas');
@@ -67,32 +67,32 @@ function gameFor4() {
         context.strokeRect(player.x, player.y, player.width, player.height);
     }
 
-    function resetBall() {
-        ball.x = canvas.width / 2;
-        ball.y = canvas.height / 2;
+    // function resetBall() {
+    //     ball.x = canvas.width / 2;
+    //     ball.y = canvas.height / 2;
         
-        // Randomly choose a direction: 0 = right, 1 = left, 2 = up, 3 = down
-        const direction = Math.floor(Math.random() * 4);
+    //     // Randomly choose a direction: 0 = right, 1 = left, 2 = up, 3 = down
+    //     const direction = Math.floor(Math.random() * 4);
         
-        switch(direction) {
-            case 0: // right
-                ball.dx = ball.speed;
-                ball.dy = Math.random() * ball.speed * 2 - ball.speed; // random vertical direction
-                break;
-            case 1: // left
-                ball.dx = -ball.speed;
-                ball.dy = Math.random() * ball.speed * 2 - ball.speed; // random vertical direction
-                break;
-            case 2: // up
-                ball.dx = Math.random() * ball.speed * 2 - ball.speed; // random horizontal direction
-                ball.dy = -ball.speed;
-                break;
-            case 3: // down
-                ball.dx = Math.random() * ball.speed * 2 - ball.speed; // random horizontal direction
-                ball.dy = ball.speed;
-                break;
-        }
-    }
+    //     switch(direction) {
+    //         case 0: // right
+    //             ball.dx = ball.speed;
+    //             ball.dy = Math.random() * ball.speed * 2 - ball.speed; // random vertical direction
+    //             break;
+    //         case 1: // left
+    //             ball.dx = -ball.speed;
+    //             ball.dy = Math.random() * ball.speed * 2 - ball.speed; // random vertical direction
+    //             break;
+    //         case 2: // up
+    //             ball.dx = Math.random() * ball.speed * 2 - ball.speed; // random horizontal direction
+    //             ball.dy = -ball.speed;
+    //             break;
+    //         case 3: // down
+    //             ball.dx = Math.random() * ball.speed * 2 - ball.speed; // random horizontal direction
+    //             ball.dy = ball.speed;
+    //             break;
+    //     }
+    // }
 
     function handlePaddleCollision(ball, paddle, paddleSide) {
         // const paddleCenter = (paddleSide === 'top' || paddleSide === 'bottom') 
@@ -163,21 +163,23 @@ function gameFor4() {
             handlePaddleCollision(ball, player4, 'right');
         }
         // Ball out of bounds
-        else if (ball.y + ball.radius > canvas.height) {
-            player1.score--;
-            resetBall();
-        }
-        else if (ball.y - ball.radius < 0) {
-            player2.score--;
-            resetBall();
-        }
-        else if (ball.x - ball.radius < 0) {
-            player3.score--;
-            resetBall();
-        }
-        else if (ball.x + ball.radius > canvas.width) {
-            player4.score--;
-            resetBall();
+        else {
+            if (ball.y + ball.radius > canvas.height) {
+                player1.score--;
+                resetBall(true, canvas, ball);
+            }
+            else if (ball.y - ball.radius < 0) {
+                player2.score--;
+                resetBall(true, canvas, ball);
+            }
+            else if (ball.x - ball.radius < 0) {
+                player3.score--;
+                resetBall(true, canvas, ball);
+            }
+            else if (ball.x + ball.radius > canvas.width) {
+                player4.score--;
+                resetBall(true, canvas, ball);
+            }
         }
     }
 

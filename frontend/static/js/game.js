@@ -1,4 +1,4 @@
-import { drawBall } from './modules/game_module.js';
+import { drawBall, resetBall } from './modules/game_module.js';
 
 function game() {
     const canvas = document.getElementById('game-canvas');
@@ -50,13 +50,13 @@ function game() {
         context.strokeStyle = 'black';
         context.strokeRect(player.x, player.y, player.width, player.height);
     }
-    function resetBall() {
-        ball.x = canvas.width / 2;
-        ball.y = canvas.height / 2;
-        ball.dx = -ball.dx;
-        ball.dy = -ball.dy;
+    // function resetBall() {
+    //     ball.x = canvas.width / 2;
+    //     ball.y = canvas.height / 2;
+    //     ball.dx = -ball.dx;
+    //     ball.dy = -ball.dy;
     
-    }
+    // }
     
     function moveBall() {
         ball.x += ball.dx;
@@ -72,7 +72,7 @@ function game() {
             else {
                 player1.score++;
             }
-            resetBall();
+            resetBall(false, canvas, ball); // ifFourPlayersMode is false
         }
         if (ball.x + ball.radius > player2.x && ball.y > player2.y && ball.y < player2.y + paddleHeight) {
             // Collision with player2 paddle

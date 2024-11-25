@@ -44,6 +44,7 @@ function tournament() {
     let countdown = 3; // Countdown timer
     let keyState = {};
 
+
     function drawPaddle(x, y, color) {
         context.fillStyle = color;
         context.fillRect(x, y, paddleWidth, paddleHeight);
@@ -291,12 +292,12 @@ function tournament() {
         keyState[event.key] = true;
     });
 
-    // document.addEventListener('keyup', (event) => {
-    //     keyState[event.key] = false;
-    //     if (event.key === 'Enter') {
-    //         startTournament();
-    //     }
-    // });
+    document.addEventListener('keyup', (event) => {
+        keyState[event.key] = false;
+        if (event.key === 'Enter') {
+            startTournament();
+        }
+    });
 
     const gameForm = document.getElementById('player-names-form');
     gameForm.addEventListener('submit', startTournament);
