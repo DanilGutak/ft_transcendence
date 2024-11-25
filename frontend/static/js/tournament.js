@@ -267,9 +267,10 @@ function tournament() {
         context.fillText(
             `${currentMatch.leftPlayer.name} vs ${currentMatch.rightPlayer.name}`,
             canvas.width / 2 - 100,
-            50
+            50,
+            270
         );
-        context.fillText(`Stage: ${tournamentStage}`, canvas.width / 2 - 70, canvas.height - 20);
+        context.fillText(`Stage: ${tournamentStage}`, canvas.width / 2 - 90, canvas.height - 20);
     }
 
     function displayCountdown() {
