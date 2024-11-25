@@ -169,6 +169,14 @@ function tournament() {
         displayCountdown();
     }
 
+    document.addEventListener('keydown', event => {
+        keyState[event.key] = true;
+    });
+    
+    document.addEventListener('keyup', event => {
+        keyState[event.key] = false;
+    });
+
     function resetMatch() {
         currentMatch.leftPlayer.score = 0;
         currentMatch.rightPlayer.score = 0;

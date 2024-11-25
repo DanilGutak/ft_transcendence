@@ -191,11 +191,11 @@ function gameFor4() {
 
     document.addEventListener('keyup', event => {
         keyStateFor4[event.key] = false;
-        if (event.key === 'Enter') {
-            canvas.style.display = "block";
-            // document.getElementById('gameFor4-rules').style.display = 'none';
-            startGame();
-        }
+        // if (event.key === 'Enter') {
+        //     canvas.style.display = "block";
+        //     // document.getElementById('gameFor4-rules').style.display = 'none';
+        //     startGame();
+        // }
     });
 
     const gameForm = document.getElementById('gameFor4-button');

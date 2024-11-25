@@ -144,9 +144,6 @@ function game() {
     
     document.addEventListener('keyup', event => {
         keyState[event.key] = false;
-        if (event.key === 'Enter') {
-            startGame();
-        }
     });
     
     const gameForm = document.getElementById('game-button');
