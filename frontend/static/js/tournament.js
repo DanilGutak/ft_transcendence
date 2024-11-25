@@ -8,7 +8,7 @@ function tournament() {
     const paddleHeight = 100;
     const paddleSpeed = 10;
     const ballRadius = 10;
-    const maxScore = 1;
+    const maxScore = 5;
 
     // Define controls for left and right sides
     const controls = {
