@@ -16,10 +16,11 @@ Including another URLconf
 """
 from django.urls import path, re_path
 from frontend_app.views import *
+from django.views.generic import TemplateView
 
 urlpatterns = [
     path('', render_page, {'page_name': 'home'}, name='Index'),
     # re_path(r'^.*$', redirect_to_home),
-    #path('oauth-redirect/', OAuthStatusView.as_view(), name='oauth_redirect'),  # Add this route
+    path('oauth_popup.html', TemplateView.as_view(template_name='oauth_popup.html'), name='oauth_popup'),
 
 ]

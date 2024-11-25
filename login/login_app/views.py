@@ -173,16 +173,17 @@ class OAuthCallbackView(APIView): # this gets called when the route (urls.py) "/
     def redirect_with_param(self, request, param):
         # add a new variable to the session to decide success or not
         try:
-            #request.session['oauth_redirected'] = True
+            request.session['oauth_redirected'] = True
             request.session['oauth_status'] = param['status']
-            request.session.modified = True
-            if (param['status'] == 'success'):
-                return redirect(f'/?oauth_redirected=true')
-            elif param['status'] == 'failure':
-                return redirect(f'/?oauth_redirected=false')
+            #request.session.modified = True
+            #if (param['status'] == 'success'):
+            #    return redirect(f'/?oauth_redirected=true')
+            #elif param['status'] == 'failure':
+            #    return redirect(f'/?oauth_redirected=false')
+            print("------------------------SUUUCCESSS")
+            return redirect('https://127.0.0.1:8005/oauth_popup.html')
         except Exception as e:
-            print(e)
-            return redirect('/')
+            return redirect('https://127.0.0.1:8005/oauth_popup.html')
 
     def get(self, request):
         # Extract the authorization code from the callback URL
@@ -315,3 +316,7 @@ class GetOAuthTokens(APIView):
             })
         else:
             return JsonResponse({'error': 'Tokens not found'}, status=400)
+
+def check_oauth_redirected(request):
+    oauth_redirected = request.session.get('oauth_redirected', False)  # Defaults to False if not set
+    return JsonResponse({'oauth_redirected': oauth_redirected})

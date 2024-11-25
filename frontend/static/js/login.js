@@ -26,6 +26,99 @@ document.addEventListener('DOMContentLoaded', () => {
 
 let oauthRequestInProgress = false;
 
+function openOAuthPopup(oauthUrl) {
+  
+  const popup = window.open(oauthUrl, 'oauthPopup', 'width=600,height=700,popup=true');
+  if (!popup) {
+    console.error('Popup blocked. Please enable popups for this site.');
+    alert('Popup blocked by your browser. Please allow popups for this site.');
+    return;
+  }
+  console.log("POPUUUUUP", popup);
+  window.addEventListener('message', function handleOAuthMessage(event) {
+      if (event.origin !== window.location.origin) {
+          console.warn('Received message from unknown origin:', event.origin);
+          return;
+      }
+      const { access, refresh, oauth_success } = event.data;
+
+      if (oauth_success) {
+          localStorage.setItem('access-token', access);
+          localStorage.setItem('refresh-token', refresh);
+          localStorage.setItem('oauthLogin', 'true');
+          localStorage.setItem('loggedIn', 'true');
+
+          successContainer.classList.remove('hidden');
+          
+          checkLogin();
+          loginSuccess();
+          popup.close();
+      } else {
+        //----- case for failed oauth ----
+        errorContainer.classList.remove('hidden');
+        errorMessage.classList.remove('hidden');
+        //loginForm.disabled = false;
+        setTimeout(() => {
+        errorMessage.innerHTML = '<strong>OAUTH Login failed! Try again later</strong>';
+        }, 2000);
+        // Show error message on failed login
+        setTimeout(() => {
+            errorMessage.classList.add('hidden');
+            errorContainer.classList.add('hidden');
+        }, 2000); //wait 4 secs then hide it
+
+        popup.close();
+        // ----- end -------
+      }
+
+      if (popup) popup.close();
+      window.removeEventListener('message', handleOAuthMessage);
+  });
+}
+
+
+function oauthLogin() {
+  if (oauthRequestInProgress) {
+      return;
+  }
+  oauthRequestInProgress = true;
+
+  fetch('/api/oauth/', {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+  })
+      .then(response => {
+          oauthRequestInProgress = false;
+          if (!response.ok) {
+              if (response.status === 429) {
+                  alert('Too many requests. Please wait a moment.');
+                  //popup.close();
+              }
+              if (response.status === 401) {
+                  //popup.close();
+                  return;
+              }
+              throw new Error('Network response was not ok');
+          }
+          return response.json();
+      })
+      .then(data => {
+          if (data['oauth_url']) {
+              // Open the popup for OAuth flow
+              openOAuthPopup(data['oauth_url']);
+          } else {
+              alert('OAuth login failed!');
+              //popup.close();
+          }
+      })
+      .catch(error => {
+          oauthRequestInProgress = false;
+          alert('Error initiating OAuth');
+          //popup.close();
+      });
+}
+
+/*
 function oauthLogin() {
     if (oauthRequestInProgress) {
         return;
@@ -65,6 +158,7 @@ function oauthLogin() {
         errorMessage.innerHTML = '<strong>OAuth login failed! Try again later.</strong>';
     });
 }
+*/
 
 async function checkLogin() {
   localStorage.setItem('loggedIn', 'false');
