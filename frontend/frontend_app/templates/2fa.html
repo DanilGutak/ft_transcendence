@@ -1,21 +1,20 @@
 {% load static %}
 <div id="2fa" class="page {% if not 2fa %}hidden{% endif %}">
-  <div class="container">
-      <div class="row">
-          <div class="col-md-6 mx-auto">
-              <h1>Please input your OTP </h1>
-              <div>You should have recieved it to the email you set during registration.</div>
-              </div>
-              <form id="2fa-form" class="mb-3">
-                  <div  class="form-group mb-3">
-                      <label for="2fa-OTP">OTP</label>
-                      <input type="OTP" class="form-control"
-                          id="2fa-OTP">
-                  </form>
-                  <button id="2fa-button" type="button"
-                      class="btn btn-primary ">Verify</button>
-              </div>
-          </div>
-      </div>
-  </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 mx-auto">
+                <!-- changed  -->
+                <h1>Please input your OTP</h1>
+                <div>You should have received it to the email you set during registration.</div>
+                <form id="2fa-form" class="mb-3">
+                    <div class="form-group mb-3">
+                        <label for="2fa-OTP">OTP</label>
+                        <input type="text" class="form-control" id="2fa-OTP">
+                    </div>
+                    <button id="2fa-button" type="submit" class="btn btn-primary">Verify</button>
+                    <button id="2fa-again-button" type="button" class="btn btn-secondary">Send Again</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>

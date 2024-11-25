@@ -7,6 +7,7 @@ function hideAllPages() {
 }
 
 function renderPage(path) {
+
     if (localStorage.getItem('loggedIn') === 'true') {
         if (path === 'login' || path === 'register' || path === '2fa') {
             path = '';

@@ -11,9 +11,3 @@ def render_page(request, page_name):
 def redirect_to_home(request):
     return redirect('Index')
 
-
-from django.views.generic import TemplateView
-
-class OAuthStatusView(TemplateView):
-    template_name = 'oauth_redirect.html'  # The HTML file where the JavaScript will be loaded
-

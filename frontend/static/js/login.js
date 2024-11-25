@@ -29,23 +29,25 @@ function oauthLogin() {
         return;
     }
     oauthRequestInProgress = true;
-    fetch('/api/oauth/', {
+    let apiResponse = fetch('/api/oauth/', { // this fetch call ends up in urls.py at the matching endpoint, meaning it triggers OAuthLoginView.as_view()
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
         }
-    })
-    .then(response => {
+    }).then(response => {
         oauthRequestInProgress = false;
         if (!response.ok) {
             if (response.status === 429) {
                 alert('Too many requests. Please wait a moment.');
             }
+            if (response.status === 401) {
+              // changeHTMLToReflectNoAuth()
+              // return
+            }
             throw new Error('Network response was not ok');
         }
         return response.json();
-    })
-    .then(data => {
+    }).then(data => {
         if (data['oauth_url']) {
             // Redirect the user to the OAuth provider's authorization URL
             window.location.href = data['oauth_url'];
@@ -80,6 +82,11 @@ async function checkLogin() {
       //localStorege.setItem('username', data.username);
       document.getElementById('logged-in').classList.remove('hidden');
       document.getElementById('logged-out').classList.add('hidden');
+      if (localStorage.getItem('oauthLogin') === 'true')
+      {
+          document.getElementById('2fa-tickbox').disabled = true;
+      }
+      
     }
     else if (response.status === 401) {
       if (refreshToken2) {
@@ -102,16 +109,11 @@ async function checkLogin() {
           localStorage.removeItem('access-token');
           localStorage.removeItem('refresh-token');
         }
-
-
       }
-
-
       else {
         document.getElementById('logged-in').classList.add('hidden');
         document.getElementById('logged-out').classList.remove('hidden');
       }
-    
     }
   }
 }
@@ -131,8 +133,6 @@ async function logout() {
     },
     body: JSON.stringify(data),
   })
-
-  // If unauthorized, attempt to refresh the token and retry logout
 
   //case of unauthorized
   if (response.status === 401) {
@@ -181,6 +181,7 @@ function reset_local_storage() {
   if (localStorage.getItem('oauthLogin')) {
     localStorage.removeItem('oauthLogin');
   }
+  document.getElementById('2fa-tickbox').disabled = false;
   document.getElementById('logged-in').classList.add('hidden');
   document.getElementById('logged-out').classList.remove('hidden');
 }
@@ -209,49 +210,50 @@ function login() {
         throw new Error('Network response was not ok');
     }
     return response.json();
-})
-.then(data => {
-    // Handle successful login here
-    errorContainer.classList.add('hidden'); // Hide error message on successful login
-    if (data['message'] === 'Two factor authentication required') {
-        document.getElementById('login').classList.add('hidden');
-        document.getElementById('2fa').classList.remove('hidden');
-        data = {
-            username: username,
-            password: password
-        };
-        fetch('/api/2fa/send', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        })
-    }
-    else
-    {
-      successContainer.classList.remove('hidden');
-      localStorage.setItem('loggedIn', 'true');
-      successMessage.innerHTML = '<strong>Logged in succesfully!</strong>';
-      document.getElementById('login-username').value = '';
-      document.getElementById('login-password').value = '';
-      localStorage.setItem('access-token', data['access']);
-      localStorage.setItem('refresh-token', data['refresh']);
-     
-      loginSuccess();
-
-      
-
-    }
-})
-.catch(error => {
-    errorContainer.classList.remove('hidden');
-    errorMessage.classList.remove('hidden');
-    
-    errorMessage.innerHTML = '<strong>Login failed! Try again later</strong>';
-    
-    
-});
+  })
+  .then(data => {
+      errorContainer.classList.add('hidden'); // Hide error message on successful login
+      if (data['message'] === 'Two factor authentication required') {
+          document.getElementById('login').classList.add('hidden');
+          document.getElementById('2fa').classList.remove('hidden');
+          data = {
+              username: username,
+              password: password
+          };
+          fetch('/api/2fa/send', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(data),
+          })
+      }
+      else
+      {
+        successContainer.classList.remove('hidden');
+        localStorage.setItem('loggedIn', 'true');
+        successMessage.innerHTML = '<strong>Logged in succesfully!</strong>';
+        document.getElementById('login-username').value = '';
+        document.getElementById('login-password').value = '';
+        localStorage.setItem('access-token', data['access']);
+        localStorage.setItem('refresh-token', data['refresh']);
+        setTimeout(() => {
+          loginSuccess();
+        }, 2000);
+      }
+  })
+  .catch(error => {
+      errorContainer.classList.remove('hidden');
+      errorMessage.classList.remove('hidden');
+      //loginForm.disabled = false;
+      setTimeout(() => {
+        errorMessage.innerHTML = '<strong>Login failed! Try again later</strong>';
+      }, 2000);
+      setTimeout(() => {
+        errorMessage.classList.add('hidden');
+        errorContainer.classList.add('hidden');
+      }, 2000); //wait 4 secs then hide it
+  });
 }
 // press on the "Login" button in the login form
 function loginSuccess() {
@@ -288,5 +290,3 @@ function loginSuccess() {
   history.pushState('game', null, window.location.origin);
   renderPage('game');
 }
-
-// Handle OAuth2 login

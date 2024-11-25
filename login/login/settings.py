@@ -201,8 +201,23 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-DEBUG = False
+DEBUG = True
 
+import os
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'DEBUG',
+    },
+}
 
 # 42 OAUTH STUFF...
 
@@ -216,4 +231,4 @@ environ.Env.read_env()
 OAUTH_TOKEN_URL = 'https://api.intra.42.fr/oauth/token'
 OAUTH_CLIENT_ID = env('OAUTH_CLIENT_ID')
 OAUTH_CLIENT_SECRET = env('OAUTH_CLIENT_SECRET')
-OAUTH_USERINFO_URL = 'https://api.intra.42.fr/v2/me'
+OAUTH_USERINFO_URL = 'https://api.intra.42.fr/v2/me#####'
