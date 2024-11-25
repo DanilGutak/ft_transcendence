@@ -15,24 +15,13 @@ document.addEventListener('DOMContentLoaded', () => {
     Submit2fa.addEventListener('click', function(event) {
 
         verify2fa();
-        Submit2fa.disabled = true;
-        setTimeout(() => {
-            Submit2fa.disabled = false;
-        }, 1000);
-    });
-    Send2fa.addEventListener('click', function(event) {
-      send2fa();
-      Send2fa.disabled = true;
-        setTimeout(() => {
-            Send2fa.disabled = false;
-        }, 1000);
+        document.getElementById('2fa').value = '';
+
+        
     });
     Tickbox2fa.addEventListener('click', function(event) {
       tickbox2fa();
-      Tickbox2fa.disabled = true;
-      setTimeout(() => {
-        Tickbox2fa.disabled = false;
-    }, 1000);
+      
     });
   });
 
@@ -121,7 +110,7 @@ function handleFailure(message) {
 
     successContainer.classList.add('hidden');
     errorContainer.classList.remove('hidden');
-    errorMessage.classList.innerHTML = `<strong>${message}</strong>`;
+    errorMessage.classList.innerHTML = 'error${message}';
     
 }
 
@@ -167,14 +156,15 @@ function verify2fa() {
         
         loginSuccess();
         
-    })
+    })  
     .catch(error => {
         errorContainer.classList.remove('hidden');
+        errorMessage.classList.remove('hidden');
         if (error['error']) {
-            errorMessage.innerHTML = '<strong>Verification failed! ' + error['error'] + '</strong>';
+            errorMessage.innerHTML = '<strong>Could not verify OTP </strong>';
         }
         else {
-            errorMessage.innerHTML = '<strong>Verification failed! Try again later</strong>';
+            errorMessage.innerHTML = '<strong>Could not verify OTP! Try again later</strong>';
         }
     });
 

@@ -60,14 +60,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                     errorContainer.classList.remove('hidden');
                     errorMessage.classList.remove('hidden');
                     //loginForm.disabled = false;
-                    setTimeout(() => {
                     errorMessage.innerHTML = '<strong>Login failed! Try again later</strong>';
-                    }, 2000);
                     // Show error message on failed login
-                    setTimeout(() => {
-                        errorMessage.classList.add('hidden');
-                        errorContainer.classList.add('hidden');
-                    }, 2000); //wait 4 secs then hide it
+                    
                     //alert('OAuth login failed! Missing tokens.');
                     //redirectToHomepage();
                 }

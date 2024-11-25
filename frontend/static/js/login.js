@@ -237,22 +237,15 @@ function login() {
         document.getElementById('login-password').value = '';
         localStorage.setItem('access-token', data['access']);
         localStorage.setItem('refresh-token', data['refresh']);
-        setTimeout(() => {
-          loginSuccess();
-        }, 2000);
+        loginSuccess();
       }
   })
   .catch(error => {
       errorContainer.classList.remove('hidden');
       errorMessage.classList.remove('hidden');
       //loginForm.disabled = false;
-      setTimeout(() => {
-        errorMessage.innerHTML = '<strong>Login failed! Try again later</strong>';
-      }, 2000);
-      setTimeout(() => {
-        errorMessage.classList.add('hidden');
-        errorContainer.classList.add('hidden');
-      }, 2000); //wait 4 secs then hide it
+      errorMessage.innerHTML = '<strong>Login failed! Try again later</strong>';
+      
   });
 }
 // press on the "Login" button in the login form
