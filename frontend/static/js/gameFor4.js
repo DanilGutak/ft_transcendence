@@ -59,6 +59,8 @@ function gameFor4() {
         color: '#FFF'
     };
 
+    let animationFrameId;
+
     function drawPaddle(player) {
         context.fillStyle = player.color;
         context.fillRect(player.x, player.y, player.width, player.height);
@@ -67,46 +69,7 @@ function gameFor4() {
         context.strokeRect(player.x, player.y, player.width, player.height);
     }
 
-    // function resetBall() {
-    //     ball.x = canvas.width / 2;
-    //     ball.y = canvas.height / 2;
-        
-    //     // Randomly choose a direction: 0 = right, 1 = left, 2 = up, 3 = down
-    //     const direction = Math.floor(Math.random() * 4);
-        
-    //     switch(direction) {
-    //         case 0: // right
-    //             ball.dx = ball.speed;
-    //             ball.dy = Math.random() * ball.speed * 2 - ball.speed; // random vertical direction
-    //             break;
-    //         case 1: // left
-    //             ball.dx = -ball.speed;
-    //             ball.dy = Math.random() * ball.speed * 2 - ball.speed; // random vertical direction
-    //             break;
-    //         case 2: // up
-    //             ball.dx = Math.random() * ball.speed * 2 - ball.speed; // random horizontal direction
-    //             ball.dy = -ball.speed;
-    //             break;
-    //         case 3: // down
-    //             ball.dx = Math.random() * ball.speed * 2 - ball.speed; // random horizontal direction
-    //             ball.dy = ball.speed;
-    //             break;
-    //     }
-    // }
-
     function handlePaddleCollision(ball, paddle, paddleSide) {
-        // const paddleCenter = (paddleSide === 'top' || paddleSide === 'bottom') 
-        //     ? paddle.x + paddleWidth / 2 
-        //     : paddle.y + paddleHeight / 2;
-        
-        // const distanceFromCenter = (paddleSide === 'top' || paddleSide === 'bottom') 
-        //     ? ball.x - paddleCenter 
-        //     : ball.y - paddleCenter;
-        
-        // const maxBounceAngle = Math.PI / 4; // 45 degrees
-        // const normalizedDistance = distanceFromCenter / ((paddleSide === 'top' || paddleSide === 'bottom') ? paddleWidth / 2 : paddleHeight / 2);
-        // const bounceAngle = normalizedDistance * maxBounceAngle;
-        // const speed = Math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy);
         let paddleCenter, distanceFromCenter, normalizedDistance;
 
         if (paddleSide === 'top' || paddleSide === 'bottom') {
@@ -210,7 +173,7 @@ function gameFor4() {
             context.fillText(player2.score, canvas.width / 2, 30);
             context.fillText(player3.score, 20, canvas.height / 2);
             context.fillText(player4.score, canvas.width - 40, canvas.height / 2);
-            requestAnimationFrame(gameLoop);
+            animationFrameId = requestAnimationFrame(gameLoop);
         } else {
             context.font = '50px Arial';
             context.fillText('Game Over', canvas.width / 2 - 150, canvas.height / 2 - 100);
@@ -273,7 +236,10 @@ function gameFor4() {
     }
 
 
-    function startGame() {
+    function startGame() {        
+        if (animationFrameId) {
+            cancelAnimationFrame(animationFrameId);
+        }
         if (gameStateFor4 === 1) {
             return;
         }

@@ -11,7 +11,7 @@ function game() {
     const paddleSpeed = 10;
     
     const ballRadius = 10;
-    
+
     
     const player1 = {
         x: 5,
@@ -42,6 +42,7 @@ function game() {
         color: '#FFF'
     };
 
+    let animationFrameId;
     
     function drawPaddle(player) {
         context.fillStyle = player.color;
@@ -50,13 +51,6 @@ function game() {
         context.strokeStyle = 'black';
         context.strokeRect(player.x, player.y, player.width, player.height);
     }
-    // function resetBall() {
-    //     ball.x = canvas.width / 2;
-    //     ball.y = canvas.height / 2;
-    //     ball.dx = -ball.dx;
-    //     ball.dy = -ball.dy;
-    
-    // }
     
     function moveBall() {
         ball.x += ball.dx;
@@ -128,7 +122,7 @@ function game() {
             context.font = '30px Arial';
             context.fillText(player1.score, canvas.width / 4, 50);
             context.fillText(player2.score, 3 * canvas.width / 4, 50);
-            requestAnimationFrame(gameLoop);
+            animationFrameId = requestAnimationFrame(gameLoop);
         }
         else
         {
@@ -183,7 +177,9 @@ function game() {
     
     
     function startGame() {
-    
+        if (animationFrameId) {
+            cancelAnimationFrame(animationFrameId);
+        }
         if (gameState === 1) {
             return;
         }

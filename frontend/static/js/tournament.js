@@ -8,7 +8,7 @@ function tournament() {
     const paddleHeight = 100;
     const paddleSpeed = 10;
     const ballRadius = 10;
-    const maxScore = 5;
+    const maxScore = 1;
 
     // Define controls for left and right sides
     const controls = {
@@ -43,6 +43,8 @@ function tournament() {
     let gameState = 0; // 0: Not started, 1: Running, 2: Countdown
     let countdown = 3; // Countdown timer
     let keyState = {};
+
+    let animationFrameId;
 
 
     function drawPaddle(x, y, color) {
@@ -112,6 +114,10 @@ function tournament() {
 
     function startTournament(event) {
         event.preventDefault(); // Prevent form submission
+
+        if (animationFrameId) {
+            cancelAnimationFrame(animationFrameId);
+        }
 
         // Get player names from input fields
         for (let i = 1; i <= 4; i++) {
@@ -285,7 +291,7 @@ function tournament() {
             render();
             checkMatchOver();
         }
-        requestAnimationFrame(gameLoop);
+        animationFrameId = requestAnimationFrame(gameLoop);
     }
 
     document.addEventListener('keydown', (event) => {
