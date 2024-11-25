@@ -13,25 +13,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     Submit2fa.addEventListener('click', function(event) {
+
         verify2fa();
-        Submit2fa.disabled = true;
-        setTimeout(() => {
-            Submit2fa.disabled = false;
-        }, 20000);
-    });
-    Send2fa.addEventListener('click', function(event) {
-      send2fa();
-      Send2fa.disabled = true;
-        setTimeout(() => {
-            Send2fa.disabled = false;
-        }, 20000);
+        document.getElementById('2fa').value = '';
+
+        
     });
     Tickbox2fa.addEventListener('click', function(event) {
       tickbox2fa();
-      Tickbox2fa.disabled = true;
-      setTimeout(() => {
-        Tickbox2fa.disabled = false;
-    }, 2000);
+      
     });
   });
 
@@ -110,9 +100,7 @@ function handleSuccess(message) {
     successContainer.classList.remove('hidden');
     successMessage.innerHTML = `<strong>${message}</strong>`;
 
-    setTimeout(() => {
-        successContainer.classList.add('hidden');
-    }, 2000);
+    
 }
 function handleFailure(message) {
     const successContainer = document.getElementById('success-container');
@@ -123,9 +111,7 @@ function handleFailure(message) {
     successContainer.classList.add('hidden');
     errorContainer.classList.remove('hidden');
     errorMessage.classList.innerHTML = `<strong>${message}</strong>`;
-    setTimeout(() => {
-        errorContainer.classList.add('hidden');
-    }, 3000);
+    
 }
 
 function verify2fa() {
@@ -163,15 +149,13 @@ function verify2fa() {
         errorMessage.classList.add('hiddeh');
         successContainer.classList.remove('hidden');
         successMessage.innerHTML = '<strong>Verification successful!</strong>';
-        document.getElementById('2fa-tickbox').checked = true;
         localStorage.setItem('access-token', data['access']);
         localStorage.setItem('refresh-token', data['refresh']);
         document.getElementById('login-username').value = '';
         document.getElementById('login-password').value = '';
-        // wait for sec
-        setTimeout(() => {
-            loginSuccess();
-        }, 2000);
+        
+        loginSuccess();
+        
     })
     .catch(error => {
         errorContainer.classList.remove('hidden');

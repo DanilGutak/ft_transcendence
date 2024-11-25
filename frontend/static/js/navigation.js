@@ -18,7 +18,8 @@ function renderPage(path) {
         }
     }
     hideAllPages();
-    if (path === null || path === '') {
+    //if path undefined
+    if (path === null || path === '' || path === undefined) {
         document.getElementById('home').classList.remove('hidden');
     }
     else {
@@ -31,6 +32,13 @@ function navigate(event) {
     event.preventDefault();
     const path = event.target.getAttribute('data-path');
     history.pushState({ path }, null, window.location.origin);
+    document.getElementById('2fa-OTP').value = '';
+    document.getElementById('login-username').value = '';
+    document.getElementById('login-password').value = '';
+    document.getElementById('register-password').value = '';
+    document.getElementById('register-password2').value = '';
+    document.getElementById('register-email').value = '';
+    document.getElementById('register-username').value = '';
     renderPage(path);
 }
 
