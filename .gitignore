@@ -5,6 +5,7 @@ postgres/
 nginx_logs/
 backend_logs/
 .env
+d
 
 # for some reason, some lines below don't work (or I don't understand the syntax lol),
 # let's test all of them together and remove later the unnecessary ones
